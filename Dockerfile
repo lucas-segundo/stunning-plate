@@ -3,9 +3,15 @@ FROM node:20-alpine AS base
 WORKDIR /app
 COPY . .
 
+# For Prisma
+RUN apk update
+RUN apk add openssl
+
 FROM base AS dev
 
 RUN npm install
+RUN npm run prisma:generate
+
 
 FROM base AS build
 
