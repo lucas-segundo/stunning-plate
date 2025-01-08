@@ -9,15 +9,15 @@ services:
       - ${DOCKER_COMPOSE_APP_DEBUG_PORT:-9229}:9229
     volumes:
       - .:/app
-  #   environment:
-  #     - POSTGRES_DATABASE_URL=${POSTGRES_DATABASE_URL}
-  #   depends_on:
-  #     - db
-  # db:
-  #   image: postgres
-  #   environment:
-  #     - POSTGRES_PASSWORD=postgres
-  #   volumes:
-  #     - ./pgdata:/var/lib/postgresql/data
-  #   ports:
-  #     - ${DOCKER_COMPOSE_DB_PORT:-5432}:5432
+    environment:
+      - POSTGRES_DATABASE_URL=${POSTGRES_DATABASE_URL}
+    depends_on:
+      - db
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - ${DOCKER_COMPOSE_DB_PORT:-5432}:5432
