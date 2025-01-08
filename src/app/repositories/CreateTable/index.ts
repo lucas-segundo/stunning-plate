@@ -1,4 +1,4 @@
-import { Table } from 'src/entities/Table'
+import { Table } from 'entities/Table'
 
 export type CreateTableRepositoryParams = Omit<Table, 'id'>
 
