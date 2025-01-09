@@ -1,9 +1,9 @@
 import { Table } from 'entities/Table'
 
 export interface GetTablesRepositoryParams {
-  where: {
-    status: {
-      equals: Table['status']
+  where?: {
+    status?: {
+      equals?: Table['status']
     }
   }
 }
