@@ -1,46 +1,42 @@
-import { mockTable } from 'entities/Table/mock'
-import { PrismaCreateTableRepository } from '.'
 import { mockedPrismaClient } from 'infra/prisma/mock'
-import { mockPrismaTable } from 'infra/prisma/models/Table/mock'
-import { adaptTableFromPrisma } from 'infra/prisma/adapters/adaptTable'
+import { PrismaCreateUserRepository } from '.'
+import { mockUser } from 'entities/User/mock'
+import { mockPrismaUser } from 'infra/prisma/models/User/mock'
+import { adaptUserFromPrisma } from 'infra/prisma/adapters/adaptUser'
 
 const makeMocks = () => {
-  const sut = new PrismaCreateTableRepository()
+  const sut = new PrismaCreateUserRepository()
 
-  const prismaTable = mockPrismaTable()
-  mockedPrismaClient.table.create.mockResolvedValue(prismaTable)
+  const prismaUser = mockPrismaUser()
+  mockedPrismaClient.user.create.mockResolvedValue(prismaUser)
 
-  return { sut, prismaTable }
+  return { sut, prismaUser }
 }
 
 describe('CreateTable', () => {
   it('should create with right params', async () => {
     const { sut } = makeMocks()
-    const table = mockTable()
+    const table = mockUser()
 
     await sut.create(table)
 
-    expect(mockedPrismaClient.table.create).toHaveBeenCalledWith({
+    expect(mockedPrismaClient.user.create).toHaveBeenCalledWith({
       data: {
-        seats: table.seats,
-        status: table.status,
+        name: table.name,
       },
       select: {
         id: true,
-        seats: true,
-        status: true,
-        createdAt: true,
-        updatedAt: true,
+        name: true,
       },
     })
   })
 
-  it('should return a table', async () => {
-    const { sut, prismaTable } = makeMocks()
+  it('should return a user', async () => {
+    const { sut, prismaUser } = makeMocks()
 
-    const table = await sut.create(mockTable())
-    const adaptedTable = adaptTableFromPrisma(prismaTable)
+    const user = await sut.create(mockUser())
 
-    expect(table).toEqual(adaptedTable)
+    const adaptedUser = adaptUserFromPrisma(prismaUser)
+    expect(user).toEqual(adaptedUser)
   })
 })
