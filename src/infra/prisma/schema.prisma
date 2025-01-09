@@ -23,7 +23,7 @@ model User {
 
 model Table {
   id        Int   @id @default(autoincrement())
-  status    Int   @default(0)
+  status    TableStatus @default(free)
   seats     Int
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt      @map("updated_at")
@@ -31,6 +31,12 @@ model Table {
   bookings  Booking[]
 
   @@map("tables")
+}
+
+enum TableStatus {
+  free
+  occupied
+  reserved
 }
 
 model Booking {
