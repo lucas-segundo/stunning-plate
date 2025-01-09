@@ -1,9 +1,14 @@
 import { Table as PrismaTable } from '@prisma/client'
 import { Table } from 'entities/Table'
 
-export const adaptTableFromPrisma = (prismaTable: PrismaTable): Table => {
+export const adaptTableFromPrisma = ({
+  id,
+  seats,
+  status,
+}: PrismaTable): Table => {
   return {
-    ...prismaTable,
-    id: prismaTable.id.toString(),
+    id: id.toString(),
+    seats,
+    status,
   }
 }
