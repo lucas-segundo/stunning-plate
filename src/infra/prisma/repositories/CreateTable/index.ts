@@ -17,8 +17,6 @@ export class PrismaCreateTableRepository implements CreateTableRepository {
         id: true,
         seats: true,
         status: true,
-        createdAt: true,
-        updatedAt: true,
       },
     })
 

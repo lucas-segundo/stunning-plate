@@ -5,7 +5,7 @@ export const adaptTableFromPrisma = ({
   id,
   seats,
   status,
-}: PrismaTable): Table => {
+}: Pick<PrismaTable, 'id' | 'seats' | 'status'>): Table => {
   return {
     id: id.toString(),
     seats,
