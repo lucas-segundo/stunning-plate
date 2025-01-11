@@ -14,14 +14,14 @@ describe('ControllerErrorHandler', () => {
 
   it('should return HTTPErrorResponse with KnownError', () => {
     const knownError = new KnownError('Known error occurred', 400)
-    const response = errorHandler.handle(knownError)
+    const response = errorHandler.handleError(knownError)
     expect(response).toBeInstanceOf(HTTPErrorResponse)
     expect(response.error).toBe(knownError)
   })
 
   it('should return HTTPErrorResponse with UnexpectedError for unknown error', () => {
     const unknownError = new Error('Unknown error occurred')
-    const response = errorHandler.handle(unknownError)
+    const response = errorHandler.handleError(unknownError)
     expect(response).toBeInstanceOf(HTTPErrorResponse)
     expect(response.error).toBeInstanceOf(UnexpectedError)
   })

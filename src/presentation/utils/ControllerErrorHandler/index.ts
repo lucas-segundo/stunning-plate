@@ -3,7 +3,7 @@ import { UnexpectedError } from 'app/errors/UnexpectedError'
 import { HTTPErrorResponse } from 'presentation/interfaces/Controller'
 
 export abstract class ControllerErrorHandler {
-  handle(error: unknown): HTTPErrorResponse {
+  handleError(error: unknown): HTTPErrorResponse {
     if (error instanceof KnownError) {
       return new HTTPErrorResponse(error)
     } else {
