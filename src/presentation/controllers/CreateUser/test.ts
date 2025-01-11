@@ -4,8 +4,7 @@ import {
 } from 'app/repositories/CreateUser/mock'
 import { CreateUserController } from '.'
 import { mockUser } from 'entities/User/mock'
-import { HTTPErrorResponse, HTTPResponse } from '../../interfaces/Controller'
-import { UnexpectedError } from 'app/errors/UnexpectedError'
+import { HTTPResponse } from '../../interfaces/Controller'
 
 const makeMocks = () => {
   const createUserRepo = mockCreateUserRepository()
@@ -35,16 +34,5 @@ describe('CreateUserController', () => {
 
     expect(response.data).toBe(table)
     expect(response.statusCode).toBe(201)
-  })
-
-  it('should return 500 on failure', async () => {
-    const { sut, createUserRepo } = makeMocks()
-    createUserRepo.create.mockRejectedValueOnce(new Error('any_error'))
-
-    const response = (await sut.handle(
-      mockCreateUserRepositoryParams(),
-    )) as HTTPErrorResponse
-
-    expect(response.error).toBeInstanceOf(UnexpectedError)
   })
 })

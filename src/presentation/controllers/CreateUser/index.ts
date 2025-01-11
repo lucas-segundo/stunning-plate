@@ -7,7 +7,6 @@ import {
   HTTPErrorResponse,
   HTTPResponse,
 } from '../../interfaces/Controller'
-import { UnexpectedError } from 'app/errors/UnexpectedError'
 
 export class CreateUserController implements Controller {
   constructor(private readonly createUserRepo: CreateUserRepository) {}
@@ -15,11 +14,7 @@ export class CreateUserController implements Controller {
   async handle(
     params: CreateUserRepositoryParams,
   ): Promise<HTTPResponse | HTTPErrorResponse> {
-    try {
-      const table = await this.createUserRepo.create(params)
-      return new HTTPResponse(table, 201)
-    } catch (error) {
-      return new HTTPErrorResponse(new UnexpectedError())
-    }
+    const table = await this.createUserRepo.create(params)
+    return new HTTPResponse(table, 201)
   }
 }
