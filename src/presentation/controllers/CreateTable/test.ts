@@ -1,7 +1,7 @@
 import { mockCreateTableRepository } from 'app/repositories/CreateTable/mock'
 import { CreateTableController } from '.'
 import { mockTable } from 'entities/Table/mock'
-import { HTTPErrorResponse, HTTPResponse } from '..'
+import { HTTPErrorResponse, HTTPResponse } from '../../interfaces/Controller'
 import { UnexpectedError } from 'app/errors/UnexpectedError'
 import { KnownError } from 'app/errors/KnownError'
 import { faker } from '@faker-js/faker/.'

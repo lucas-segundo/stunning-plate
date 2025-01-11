@@ -2,7 +2,11 @@ import {
   CreateTableRepository,
   CreateTableRepositoryParams,
 } from 'app/repositories/CreateTable'
-import { Controller, HTTPErrorResponse, HTTPResponse } from '..'
+import {
+  Controller,
+  HTTPErrorResponse,
+  HTTPResponse,
+} from '../../interfaces/Controller'
 import { UnexpectedError } from 'app/errors/UnexpectedError'
 import { KnownError } from 'app/errors/KnownError'
 

@@ -4,7 +4,7 @@ import {
 } from 'app/repositories/CreateUser/mock'
 import { CreateUserController } from '.'
 import { mockUser } from 'entities/User/mock'
-import { HTTPErrorResponse, HTTPResponse } from '..'
+import { HTTPErrorResponse, HTTPResponse } from '../../interfaces/Controller'
 import { UnexpectedError } from 'app/errors/UnexpectedError'
 
 const makeMocks = () => {

@@ -2,7 +2,11 @@ import {
   CreateUserRepository,
   CreateUserRepositoryParams,
 } from 'app/repositories/CreateUser'
-import { Controller, HTTPErrorResponse, HTTPResponse } from '..'
+import {
+  Controller,
+  HTTPErrorResponse,
+  HTTPResponse,
+} from '../../interfaces/Controller'
 import { UnexpectedError } from 'app/errors/UnexpectedError'
 
 export class CreateUserController implements Controller {
