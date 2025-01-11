@@ -1,7 +1,4 @@
-import {
-  mockCreateTableRepository,
-  mockCreateTableRepositoryParams,
-} from 'app/repositories/CreateTable/mock'
+import { mockCreateTableRepository } from 'app/repositories/CreateTable/mock'
 import { CreateTableController } from '.'
 import { mockTable } from 'entities/Table/mock'
 import { HTTPErrorResponse, HTTPResponse } from '..'
@@ -20,7 +17,7 @@ describe('CreateTableController', () => {
   it('should call create table repo with right params', async () => {
     const { createTableRepo, sut } = makeMocks()
 
-    const params = mockCreateTableRepositoryParams()
+    const params = mockTable()
     await sut.handle(params)
 
     expect(createTableRepo.create).toHaveBeenCalledWith(params)
@@ -31,9 +28,7 @@ describe('CreateTableController', () => {
     const table = mockTable()
     createTableRepo.create.mockResolvedValueOnce(table)
 
-    const response = (await sut.handle(
-      mockCreateTableRepositoryParams(),
-    )) as HTTPResponse
+    const response = (await sut.handle(table)) as HTTPResponse
 
     expect(response.data).toBe(table)
     expect(response.statusCode).toBe(201)
@@ -47,9 +42,7 @@ describe('CreateTableController', () => {
     )
     createTableRepo.create.mockRejectedValueOnce(knownError)
 
-    const response = (await sut.handle(
-      mockCreateTableRepositoryParams(),
-    )) as HTTPErrorResponse
+    const response = (await sut.handle(mockTable())) as HTTPErrorResponse
 
     expect(response.error).toBeInstanceOf(KnownError)
   })
@@ -58,9 +51,7 @@ describe('CreateTableController', () => {
     const { sut, createTableRepo } = makeMocks()
     createTableRepo.create.mockRejectedValueOnce(new Error('any_error'))
 
-    const response = (await sut.handle(
-      mockCreateTableRepositoryParams(),
-    )) as HTTPErrorResponse
+    const response = (await sut.handle(mockTable())) as HTTPErrorResponse
 
     expect(response.error).toBeInstanceOf(UnexpectedError)
   })

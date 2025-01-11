@@ -1,13 +1,4 @@
-import { mockTable } from 'entities/Table/mock'
-import { CreateTableRepository, CreateTableRepositoryParams } from '.'
-
-export const mockCreateTableRepositoryParams =
-  (): CreateTableRepositoryParams => {
-    const table = mockTable()
-    delete table.id
-
-    return table as CreateTableRepositoryParams
-  }
+import { CreateTableRepository } from '.'
 
 export const mockCreateTableRepository =
   (): jest.Mocked<CreateTableRepository> => ({
