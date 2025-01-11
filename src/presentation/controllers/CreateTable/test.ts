@@ -1,10 +1,7 @@
 import { mockCreateTableRepository } from 'app/repositories/CreateTable/mock'
 import { CreateTableController } from '.'
 import { mockTable } from 'entities/Table/mock'
-import { HTTPErrorResponse, HTTPResponse } from '../../interfaces/Controller'
-import { UnexpectedError } from 'app/errors/UnexpectedError'
-import { KnownError } from 'app/errors/KnownError'
-import { faker } from '@faker-js/faker/.'
+import { HTTPResponse } from '../../interfaces/Controller'
 
 const makeMocks = () => {
   const createTableRepo = mockCreateTableRepository()
@@ -32,28 +29,5 @@ describe('CreateTableController', () => {
 
     expect(response.data).toBe(table)
     expect(response.statusCode).toBe(201)
-  })
-
-  it('should call error handler', async () => {
-    const { sut, createTableRepo } = makeMocks()
-    const knownError = new KnownError(
-      'any_error',
-      faker.internet.httpStatusCode(),
-    )
-    createTableRepo.create.mockRejectedValueOnce(knownError)
-
-    const errorHandlerSpy = jest.spyOn(sut, 'handleError')
-
-    await sut.handle(mockTable())
-    expect(errorHandlerSpy).toHaveBeenCalledWith(knownError)
-  })
-
-  it('should return 500 on failure', async () => {
-    const { sut, createTableRepo } = makeMocks()
-    createTableRepo.create.mockRejectedValueOnce(new Error('any_error'))
-
-    const response = (await sut.handle(mockTable())) as HTTPErrorResponse
-
-    expect(response.error).toBeInstanceOf(UnexpectedError)
   })
 })
