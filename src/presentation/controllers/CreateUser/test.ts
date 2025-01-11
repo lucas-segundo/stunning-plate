@@ -46,6 +46,5 @@ describe('CreateUserController', () => {
     )) as HTTPErrorResponse
 
     expect(response.error).toBeInstanceOf(UnexpectedError)
-    expect(response.statusCode).toBe(500)
   })
 })

@@ -6,6 +6,8 @@ import { CreateTableController } from '.'
 import { mockTable } from 'entities/Table/mock'
 import { HTTPErrorResponse, HTTPResponse } from '..'
 import { UnexpectedError } from 'app/errors/UnexpectedError'
+import { KnownError } from 'app/errors/KnownError'
+import { faker } from '@faker-js/faker/.'
 
 const makeMocks = () => {
   const createTableRepo = mockCreateTableRepository()
@@ -37,6 +39,21 @@ describe('CreateTableController', () => {
     expect(response.statusCode).toBe(201)
   })
 
+  it('should return known error', async () => {
+    const { sut, createTableRepo } = makeMocks()
+    const knownError = new KnownError(
+      'any_error',
+      faker.internet.httpStatusCode(),
+    )
+    createTableRepo.create.mockRejectedValueOnce(knownError)
+
+    const response = (await sut.handle(
+      mockCreateTableRepositoryParams(),
+    )) as HTTPErrorResponse
+
+    expect(response.error).toBeInstanceOf(KnownError)
+  })
+
   it('should return 500 on failure', async () => {
     const { sut, createTableRepo } = makeMocks()
     createTableRepo.create.mockRejectedValueOnce(new Error('any_error'))
@@ -46,6 +63,5 @@ describe('CreateTableController', () => {
     )) as HTTPErrorResponse
 
     expect(response.error).toBeInstanceOf(UnexpectedError)
-    expect(response.statusCode).toBe(500)
   })
 })

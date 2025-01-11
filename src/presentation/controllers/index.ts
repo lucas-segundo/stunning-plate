@@ -1,3 +1,5 @@
+import { KnownError } from 'app/errors/KnownError'
+
 export interface Controller {
   handle: (params: any) => Promise<HTTPResponse | HTTPErrorResponse>
 }
@@ -10,8 +12,5 @@ export class HTTPResponse<Data = any> {
 }
 
 export class HTTPErrorResponse {
-  constructor(
-    public error: Error,
-    public statusCode: number,
-  ) {}
+  constructor(public error: KnownError) {}
 }

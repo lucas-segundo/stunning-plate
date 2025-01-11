@@ -15,7 +15,7 @@ export class CreateUserController implements Controller {
       const table = await this.createUserRepo.create(params)
       return new HTTPResponse(table, 201)
     } catch (error) {
-      return new HTTPErrorResponse(new UnexpectedError(), 500)
+      return new HTTPErrorResponse(new UnexpectedError())
     }
   }
 }
