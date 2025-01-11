@@ -7,11 +7,15 @@ import {
   HTTPErrorResponse,
   HTTPResponse,
 } from '../../interfaces/Controller'
-import { UnexpectedError } from 'app/errors/UnexpectedError'
-import { KnownError } from 'app/errors/KnownError'
+import { ControllerErrorHandler } from 'presentation/utils/ControllerErrorHandler'
 
-export class CreateTableController implements Controller {
-  constructor(private readonly createTableRepo: CreateTableRepository) {}
+export class CreateTableController
+  extends ControllerErrorHandler
+  implements Controller
+{
+  constructor(private readonly createTableRepo: CreateTableRepository) {
+    super()
+  }
 
   async handle(
     params: CreateTableRepositoryParams,
@@ -21,14 +25,6 @@ export class CreateTableController implements Controller {
       return new HTTPResponse(table, 201)
     } catch (error) {
       return this.handleError(error)
-    }
-  }
-
-  handleError(error: unknown): HTTPErrorResponse {
-    if (error instanceof KnownError) {
-      return new HTTPErrorResponse(error)
-    } else {
-      return new HTTPErrorResponse(new UnexpectedError())
     }
   }
 }

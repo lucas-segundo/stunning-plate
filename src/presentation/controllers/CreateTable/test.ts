@@ -34,7 +34,7 @@ describe('CreateTableController', () => {
     expect(response.statusCode).toBe(201)
   })
 
-  it('should return known error', async () => {
+  it('should call error handler', async () => {
     const { sut, createTableRepo } = makeMocks()
     const knownError = new KnownError(
       'any_error',
@@ -42,9 +42,10 @@ describe('CreateTableController', () => {
     )
     createTableRepo.create.mockRejectedValueOnce(knownError)
 
-    const response = (await sut.handle(mockTable())) as HTTPErrorResponse
+    const errorHandlerSpy = jest.spyOn(sut, 'handleError')
 
-    expect(response.error).toBeInstanceOf(KnownError)
+    await sut.handle(mockTable())
+    expect(errorHandlerSpy).toHaveBeenCalledWith(knownError)
   })
 
   it('should return 500 on failure', async () => {
