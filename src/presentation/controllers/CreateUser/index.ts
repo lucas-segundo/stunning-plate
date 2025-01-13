@@ -8,6 +8,8 @@ import {
   HTTPResponse,
 } from '../../interfaces/Controller'
 
+export type CreateUserControllerParams = CreateUserRepositoryParams
+
 export class CreateUserController implements Controller {
   constructor(private readonly createUserRepo: CreateUserRepository) {}
 
