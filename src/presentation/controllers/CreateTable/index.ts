@@ -7,10 +7,12 @@ import {
   HTTPErrorResponse,
   HTTPResponse,
 } from '../../interfaces/Controller'
+import { UseErrorHandler } from 'presentation/decorators/ErrorHandler'
 
 export class CreateTableController implements Controller {
   constructor(private readonly createTableRepo: CreateTableRepository) {}
 
+  @UseErrorHandler()
   async handle(
     params: CreateTableRepositoryParams,
   ): Promise<HTTPResponse | HTTPErrorResponse> {

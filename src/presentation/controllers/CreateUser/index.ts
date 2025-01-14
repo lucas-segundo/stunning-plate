@@ -7,12 +7,14 @@ import {
   HTTPErrorResponse,
   HTTPResponse,
 } from '../../interfaces/Controller'
+import { UseErrorHandler } from 'presentation/decorators/ErrorHandler'
 
 export type CreateUserControllerParams = CreateUserRepositoryParams
 
 export class CreateUserController implements Controller {
   constructor(private readonly createUserRepo: CreateUserRepository) {}
 
+  @UseErrorHandler()
   async handle(
     params: CreateUserRepositoryParams,
   ): Promise<HTTPResponse | HTTPErrorResponse> {
