@@ -1,8 +1,8 @@
-import { KnownError } from './KnownError'
-
-export class UnexpectedError extends KnownError {
+export class UnexpectedError extends Error {
+  statusCode: number
   constructor() {
-    super('An unexpected error occurred', 500)
+    super('An unexpected error occurred')
     this.name = 'UNEXPECTED_ERROR'
+    this.statusCode = 500
   }
 }
