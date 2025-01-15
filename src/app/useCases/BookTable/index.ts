@@ -3,7 +3,7 @@ import { CreateBookingRepository } from 'app/repositories/CreateBooking'
 import { GetTableRepository } from 'app/repositories/GetTable'
 import { Booking } from 'entities/Booking'
 
-interface DTO {
+export interface BookTableDTO {
   userID: string
   tableID: string
   date: Date
@@ -15,7 +15,7 @@ export class BookTableUseCase {
     private readonly createBookingRepository: CreateBookingRepository,
   ) {}
 
-  async book(dto: DTO): Promise<Booking> {
+  async book(dto: BookTableDTO): Promise<Booking> {
     const table = await this.getTableRepository.get(dto.tableID)
 
     if (table.status === 'free') {

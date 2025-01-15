@@ -1,20 +1,20 @@
-import { mockCreateBookingRepository } from 'app/repositories/CreateBooking/mock'
-import { mockGetTableRepository } from 'app/repositories/GetTable/mock'
-import { BookTableUseCase } from '.'
 import { mockBooking } from 'entities/Booking/mock'
 import { mockTable } from 'entities/Table/mock'
 import { TableNotFreeError } from 'app/errors/TableNotFreeError'
+import { mockBookTableUseCase } from './mock'
 
 const makeMocks = () => {
-  const getTableRepository = mockGetTableRepository()
+  const {
+    bookTableUseCase: sut,
+    createBookingRepository,
+    getTableRepository,
+  } = mockBookTableUseCase()
+
   const table = mockTable()
   getTableRepository.get.mockResolvedValue(table)
 
-  const createBookingRepository = mockCreateBookingRepository()
   const booking = mockBooking()
   createBookingRepository.create.mockResolvedValue(booking)
-
-  const sut = new BookTableUseCase(getTableRepository, createBookingRepository)
 
   return { getTableRepository, table, createBookingRepository, booking, sut }
 }
