@@ -9,6 +9,8 @@ import {
 } from '../../interfaces/Controller'
 import { UseErrorHandler } from 'presentation/decorators/ErrorHandler'
 
+export type CreateTableControllerParams = CreateTableRepositoryParams
+
 export class CreateTableController implements Controller {
   constructor(private readonly createTableRepo: CreateTableRepository) {}
 
