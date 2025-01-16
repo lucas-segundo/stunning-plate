@@ -1,10 +1,10 @@
 import { BookTableUseCase } from '.'
 import { makePrismaCreateBookingRepository } from 'infra/prisma/repositories/CreateBooking/factory'
-import { makePrismaGetTableRepository } from 'infra/prisma/repositories/GetTable/factory'
+import { makePrismaGetBookingsRepository } from 'infra/prisma/repositories/GetBookings/factory'
 
 export const makeBookTableUseCase = () => {
-  const getTableRepository = makePrismaGetTableRepository()
+  const getBookingsRepository = makePrismaGetBookingsRepository()
   const createBookingRepository = makePrismaCreateBookingRepository()
 
-  return new BookTableUseCase(getTableRepository, createBookingRepository)
+  return new BookTableUseCase(getBookingsRepository, createBookingRepository)
 }

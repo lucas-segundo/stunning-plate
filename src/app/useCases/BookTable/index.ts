@@ -1,6 +1,6 @@
 import { TableNotFreeError } from 'app/errors/TableNotFreeError'
 import { CreateBookingRepository } from 'app/repositories/CreateBooking'
-import { GetTableRepository } from 'app/repositories/GetTable'
+import { GetBookingsRepository } from 'app/repositories/GetBookings'
 import { Booking } from 'entities/Booking'
 
 export interface BookTableDTO {
@@ -11,21 +11,27 @@ export interface BookTableDTO {
 
 export class BookTableUseCase {
   constructor(
-    private readonly getTableRepository: GetTableRepository,
+    private readonly getBookingsRepository: GetBookingsRepository,
     private readonly createBookingRepository: CreateBookingRepository,
   ) {}
 
   async book(dto: BookTableDTO): Promise<Booking> {
-    const table = await this.getTableRepository.get(dto.tableID)
+    const bookings = await this.getBookingsRepository.get({
+      where: {
+        tableID: {
+          equals: dto.tableID,
+        },
+      },
+    })
 
-    if (table.status === 'free') {
+    if (bookings.length) {
+      throw new TableNotFreeError()
+    } else {
       return await this.createBookingRepository.create({
         userID: dto.userID,
         tableID: dto.tableID,
         date: dto.date,
       })
-    } else {
-      throw new TableNotFreeError()
     }
   }
 }

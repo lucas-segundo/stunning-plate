@@ -24,10 +24,10 @@ describe('GetBookings', () => {
     const params = mockGetBookingsRepositoryParams()
     await sut.get(params)
 
-    expect(mockedPrismaClient.table.findMany).toHaveBeenCalledWith({
+    expect(mockedPrismaClient.booking.findMany).toHaveBeenCalledWith({
       where: {
         tableID: {
-          equals: params.where?.tableID?.equals,
+          equals: Number(params.where?.tableID?.equals),
         },
       },
     })

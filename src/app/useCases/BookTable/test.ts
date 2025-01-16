@@ -1,5 +1,4 @@
 import { mockBooking } from 'entities/Booking/mock'
-import { mockTable } from 'entities/Table/mock'
 import { TableNotFreeError } from 'app/errors/TableNotFreeError'
 import { mockBookTableUseCase } from './mock'
 
@@ -7,29 +6,36 @@ const makeMocks = () => {
   const {
     bookTableUseCase: sut,
     createBookingRepository,
-    getTableRepository,
+    getBookingsRepository,
   } = mockBookTableUseCase()
 
-  const table = mockTable()
-  getTableRepository.get.mockResolvedValue(table)
+  getBookingsRepository.get.mockResolvedValue([])
 
-  const booking = mockBooking()
-  createBookingRepository.create.mockResolvedValue(booking)
-
-  return { getTableRepository, table, createBookingRepository, booking, sut }
+  return {
+    getBookingsRepository,
+    createBookingRepository,
+    sut,
+  }
 }
 
 describe('BookTable', () => {
-  it('should call get table repo with right params', async () => {
-    const { sut, getTableRepository } = makeMocks()
+  it('should call get bookings repo with right params', async () => {
+    const { sut, getBookingsRepository } = makeMocks()
     const booking = mockBooking()
     await sut.book(booking)
 
-    expect(getTableRepository.get).toHaveBeenCalledWith(booking.tableID)
+    expect(getBookingsRepository.get).toHaveBeenCalledWith({
+      where: {
+        tableID: {
+          equals: booking.tableID,
+        },
+      },
+    })
   })
 
-  it('should call create booking if table is free', async () => {
-    const { sut, createBookingRepository, booking } = makeMocks()
+  it('should call create booking if bookings is free', async () => {
+    const { sut, createBookingRepository } = makeMocks()
+    const booking = mockBooking()
     await sut.book(booking)
 
     expect(createBookingRepository.create).toHaveBeenCalledWith({
@@ -39,12 +45,12 @@ describe('BookTable', () => {
     })
   })
 
-  it('should throw if table is not free', async () => {
-    const { sut, getTableRepository, table, booking } = makeMocks()
-    table.status = 'occupied'
-    getTableRepository.get.mockResolvedValue(table)
+  it('should throw if bookings is not free', async () => {
+    const { sut, getBookingsRepository } = makeMocks()
+    const bookings = [mockBooking()]
+    getBookingsRepository.get.mockResolvedValue(bookings)
 
-    const promise = sut.book(booking)
+    const promise = sut.book(mockBooking())
 
     await expect(promise).rejects.toThrow(TableNotFreeError)
   })

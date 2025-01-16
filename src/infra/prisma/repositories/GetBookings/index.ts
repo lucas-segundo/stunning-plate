@@ -11,7 +11,7 @@ export class PrismaGetBookingsRepository implements GetBookingsRepository {
     const prismaBookings = await prisma.booking.findMany({
       where: {
         tableID: {
-          equals: where?.tableID?.equals,
+          equals: Number(where?.tableID?.equals),
         },
       },
     })

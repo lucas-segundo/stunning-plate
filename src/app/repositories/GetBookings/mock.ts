@@ -4,7 +4,7 @@ export const mockGetBookingsRepositoryParams =
   (): GetBookingsRepositoryParams => ({
     where: {
       tableID: {
-        equals: 1,
+        equals: '1',
       },
     },
   })

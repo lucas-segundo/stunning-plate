@@ -1,7 +1,7 @@
-import { mockGetTableRepository } from 'app/repositories/GetTable/mock'
 import { BookTableDTO, BookTableUseCase } from '.'
 import { mockCreateBookingRepository } from 'app/repositories/CreateBooking/mock'
 import { faker } from '@faker-js/faker'
+import { mockGetBookingsRepository } from 'app/repositories/GetBookings/mock'
 
 export const mockBookTableUseCaseDTO = (): BookTableDTO => ({
   userID: faker.string.uuid(),
@@ -10,16 +10,16 @@ export const mockBookTableUseCaseDTO = (): BookTableDTO => ({
 })
 
 export const mockBookTableUseCase = () => {
-  const getTableRepository = mockGetTableRepository()
+  const getBookingsRepository = mockGetBookingsRepository()
   const createBookingRepository = mockCreateBookingRepository()
 
   const bookTableUseCase = new BookTableUseCase(
-    getTableRepository,
+    getBookingsRepository,
     createBookingRepository,
   )
 
   return {
-    getTableRepository,
+    getBookingsRepository,
     createBookingRepository,
     bookTableUseCase,
   }
