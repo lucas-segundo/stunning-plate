@@ -4,11 +4,9 @@ import { Table } from 'entities/Table'
 export const adaptTableFromPrisma = ({
   id,
   seats,
-  status,
-}: Pick<PrismaTable, 'id' | 'seats' | 'status'>): Table => {
+}: Pick<PrismaTable, 'id' | 'seats'>): Table => {
   return {
     id: id.toString(),
     seats,
-    status,
   }
 }

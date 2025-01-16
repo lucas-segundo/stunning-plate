@@ -26,7 +26,11 @@ describe('GetTables', () => {
 
     expect(mockedPrismaClient.table.findMany).toHaveBeenCalledWith({
       where: {
-        status: params.where?.status?.equals,
+        seats: {
+          equals: params.where?.seats?.equals,
+          gte: params.where?.seats?.greaterThanOrEqual,
+          lte: params.where?.seats?.lessThanOrEqual,
+        },
       },
     })
   })

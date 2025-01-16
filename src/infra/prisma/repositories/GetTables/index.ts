@@ -10,7 +10,11 @@ export class PrismaGetTablesRepository implements GetTablesRepository {
   async get({ where }: GetTablesRepositoryParams): Promise<Table[]> {
     const prismaTables = await prisma.table.findMany({
       where: {
-        status: where?.status?.equals,
+        seats: {
+          equals: where?.seats?.equals,
+          gte: where?.seats?.greaterThanOrEqual,
+          lte: where?.seats?.lessThanOrEqual,
+        },
       },
     })
 

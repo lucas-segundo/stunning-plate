@@ -2,8 +2,10 @@ import { Table } from 'entities/Table'
 
 export interface GetTablesRepositoryParams {
   where?: {
-    status?: {
-      equals?: Table['status']
+    seats?: {
+      equals?: number
+      greaterThanOrEqual?: number
+      lessThanOrEqual?: number
     }
   }
 }

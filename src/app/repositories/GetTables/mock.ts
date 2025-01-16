@@ -2,8 +2,8 @@ import { GetTablesRepository, GetTablesRepositoryParams } from '.'
 
 export const mockGetTablesRepositoryParams = (): GetTablesRepositoryParams => ({
   where: {
-    status: {
-      equals: 'free',
+    seats: {
+      equals: 1,
     },
   },
 })

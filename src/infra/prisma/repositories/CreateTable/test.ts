@@ -23,12 +23,10 @@ describe('CreateTable', () => {
     expect(mockedPrismaClient.table.create).toHaveBeenCalledWith({
       data: {
         seats: table.seats,
-        status: table.status,
       },
       select: {
         id: true,
         seats: true,
-        status: true,
       },
     })
   })

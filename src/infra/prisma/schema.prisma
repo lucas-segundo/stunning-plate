@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -23,7 +20,6 @@ model User {
 
 model Table {
   id        Int   @id @default(autoincrement())
-  status    TableStatus @default(free)
   seats     Int
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt      @map("updated_at")
@@ -31,12 +27,6 @@ model Table {
   bookings  Booking[]
 
   @@map("tables")
-}
-
-enum TableStatus {
-  free
-  occupied
-  reserved
 }
 
 model Booking {

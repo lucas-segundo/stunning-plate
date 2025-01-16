@@ -10,7 +10,6 @@ describe('adaptTableFromPrisma', () => {
     const expectedTable: Table = {
       id: prismaTable.id.toString(),
       seats: prismaTable.seats,
-      status: prismaTable.status,
     }
 
     const result = adaptTableFromPrisma(prismaTable)
