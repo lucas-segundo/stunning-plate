@@ -1,6 +1,6 @@
 import { ZodError, ZodIssueCode } from 'zod'
 import { adaptErrorFromZod } from './index'
-import { ValidationError } from 'presentation/interfaces/Validation'
+import { ValidationError } from 'app/errors/ValidationError'
 
 describe('adaptErrorFromZod', () => {
   it('should adapt ZodError to ValidationError array', () => {
@@ -23,16 +23,16 @@ describe('adaptErrorFromZod', () => {
     ])
 
     const expectedErrors: ValidationError[] = [
-      {
-        code: 'invalid_type',
-        field: 'name',
-        message: 'Expected string, received number',
-      },
-      {
-        code: 'too_small',
-        field: 'age',
-        message: 'Value should be greater than or equal to 1',
-      },
+      new ValidationError(
+        'invalid_type',
+        'name',
+        'Expected string, received number',
+      ),
+      new ValidationError(
+        'too_small',
+        'age',
+        'Value should be greater than or equal to 1',
+      ),
     ]
 
     const result = adaptErrorFromZod(zodError)

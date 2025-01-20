@@ -5,5 +5,5 @@ export interface ValidationError {
 }
 
 export interface Validation<Data = Record<string, any>> {
-  validate: (data: Data) => Promise<ValidationError[]>
+  validate: (data: Data) => ValidationError[]
 }

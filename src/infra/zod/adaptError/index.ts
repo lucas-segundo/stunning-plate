@@ -1,10 +1,9 @@
-import { ValidationError } from 'presentation/interfaces/Validation'
+import { ValidationError } from 'app/errors/ValidationError'
 import { ZodError } from 'zod'
 
 export const adaptErrorFromZod = (error: ZodError): ValidationError[] => {
-  return error.issues.map((issue) => ({
-    code: issue.code,
-    field: issue.path.join('.'),
-    message: issue.message,
-  }))
+  return error.issues.map(
+    (issue) =>
+      new ValidationError(issue.code, issue.path.join('.'), issue.message),
+  )
 }
