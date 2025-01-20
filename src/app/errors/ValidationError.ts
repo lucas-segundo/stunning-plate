@@ -1,14 +1,14 @@
 import { KnownError } from './KnownError'
 
-export class ValidationError extends KnownError {
+export interface ValidationFieldError {
   code: string
-  field: string
-  statusCode: number
+  name: string
+  message: string
+}
 
-  constructor(code: string, field: string, message: string) {
-    super(message)
-    this.code = code
-    this.field = field
-    this.statusCode = 400
+export class ValidationError extends KnownError {
+  constructor(public fieldErrors: ValidationFieldError[]) {
+    super('Data sent has validation errors', 400)
+    this.name = 'VALIDATION_ERROR'
   }
 }

@@ -1,4 +1,3 @@
-import { ValidationError } from 'app/errors/ValidationError'
 import { adaptErrorFromZod } from 'infra/zod/adaptError'
 import { CreateTableControllerParams } from 'presentation/controllers/CreateTable'
 import { Validation } from 'presentation/interfaces/Validation'
@@ -9,13 +8,11 @@ const schema = z.object({
 })
 
 export class ZodCreateTableValidator implements Validation {
-  validate(data: CreateTableControllerParams): ValidationError[] {
-    const result = schema.safeParse(data)
+  async validate(data: CreateTableControllerParams): Promise<void> {
+    const result = await schema.safeParseAsync(data)
 
-    if (result.success) {
-      return []
-    } else {
-      return adaptErrorFromZod(result.error)
+    if (!result.success) {
+      throw adaptErrorFromZod(result.error)
     }
   }
 }
