@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { BookingsController } from './bookings.controller'
 import { BookTableController } from 'presentation/controllers/BookTable'
 import { makeBookTableController } from 'presentation/controllers/BookTable/factory'
+import { ResponseHelper } from 'main/helpers/Response'
 
 @Module({
   controllers: [BookingsController],
@@ -10,6 +11,7 @@ import { makeBookTableController } from 'presentation/controllers/BookTable/fact
       provide: BookTableController,
       useFactory: makeBookTableController,
     },
+    ResponseHelper,
   ],
 })
 export class BookingsModule {}
