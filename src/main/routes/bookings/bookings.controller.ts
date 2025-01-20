@@ -18,7 +18,7 @@ export class BookingsController {
     const result = await this.bookTableController.handle(params)
 
     if (result instanceof HTTPResponse) {
-      return res.status(result.statusCode).json(result.data)
+      return res.status(result.statusCode).json({ data: result.data })
     } else {
       return res.status(result.error.statusCode).json({
         name: result.error.name,

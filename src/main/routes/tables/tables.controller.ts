@@ -25,7 +25,7 @@ export class TablesController {
     const result = await this.createTableController.handle(params)
 
     if (result instanceof HTTPResponse) {
-      return res.status(result.statusCode).json(result.data)
+      return res.status(result.statusCode).json({ data: result.data })
     } else {
       return res.status(result.error.statusCode).json({
         name: result.error.name,
@@ -39,7 +39,7 @@ export class TablesController {
     const result = await this.getTablesController.handle(params)
 
     if (result instanceof HTTPResponse) {
-      return res.status(result.statusCode).json(result.data)
+      return res.status(result.statusCode).json({ data: result.data })
     } else {
       return res.status(result.error.statusCode).json({
         name: result.error.name,
