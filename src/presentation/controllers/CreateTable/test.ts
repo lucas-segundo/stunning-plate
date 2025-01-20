@@ -2,10 +2,13 @@ import { mockCreateTableRepository } from 'app/repositories/CreateTable/mock'
 import { CreateTableController } from '.'
 import { mockTable } from 'entities/Table/mock'
 import { HTTPResponse } from '../../interfaces/Controller'
+import { mockValidation } from 'presentation/interfaces/Validation/mock'
 
 const makeMocks = () => {
   const createTableRepo = mockCreateTableRepository()
-  const sut = new CreateTableController(createTableRepo)
+  const validation = mockValidation()
+  validation.validate.mockResolvedValue(undefined)
+  const sut = new CreateTableController(createTableRepo, validation)
 
   return { sut, createTableRepo }
 }
