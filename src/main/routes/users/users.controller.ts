@@ -1,14 +1,17 @@
 import { Body, Controller, Post, Res } from '@nestjs/common'
 import { Response } from 'express'
+import { ResponseHelper } from 'main/helpers/Response'
 import {
   CreateUserController,
   CreateUserControllerParams,
 } from 'presentation/controllers/CreateUser'
-import { HTTPResponse } from 'presentation/interfaces/Controller'
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly createUserController: CreateUserController) {}
+  constructor(
+    private readonly createUserController: CreateUserController,
+    private readonly responseHelper: ResponseHelper,
+  ) {}
 
   @Post()
   async create(
@@ -17,13 +20,6 @@ export class UsersController {
   ) {
     const result = await this.createUserController.handle(params)
 
-    if (result instanceof HTTPResponse) {
-      return res.status(result.statusCode).json({ data: result.data })
-    } else {
-      return res.status(result.error.statusCode).json({
-        name: result.error.name,
-        message: result.error.message,
-      })
-    }
+    this.responseHelper.respond(res, result)
   }
 }
