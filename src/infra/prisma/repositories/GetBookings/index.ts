@@ -8,10 +8,11 @@ import { adaptBookingFromPrisma } from 'infra/prisma/adapters/adaptBooking'
 
 export class PrismaGetBookingsRepository implements GetBookingsRepository {
   async get({ where }: GetBookingsRepositoryParams): Promise<Booking[]> {
+    const { tableID } = where
     const prismaBookings = await prisma.booking.findMany({
       where: {
         tableID: {
-          equals: Number(where?.tableID?.equals),
+          equals: Number(tableID?.equals),
         },
       },
     })

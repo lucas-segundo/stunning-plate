@@ -1,7 +1,7 @@
 import { Booking } from 'entities/Booking'
 
 export interface GetBookingsRepositoryParams {
-  where?: {
+  where: {
     tableID?: {
       equals?: string
     }
