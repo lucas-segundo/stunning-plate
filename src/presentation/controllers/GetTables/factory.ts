@@ -8,9 +8,9 @@ export const makeGetTablesController = (): GetTablesController => {
     where: z.object({
       seats: z
         .object({
-          equals: z.number().optional(),
-          greaterThanOrEqual: z.number().optional(),
-          lessThanOrEqual: z.number().optional(),
+          equals: z.number().positive().optional(),
+          greaterThanOrEqual: z.number().positive().optional(),
+          lessThanOrEqual: z.number().positive().optional(),
         })
         .optional(),
     }),
