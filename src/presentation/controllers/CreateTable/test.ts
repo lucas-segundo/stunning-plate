@@ -7,10 +7,10 @@ import { mockValidation } from 'presentation/interfaces/Validation/mock'
 const makeMocks = () => {
   const createTableRepo = mockCreateTableRepository()
   const validation = mockValidation()
-  validation.validate.mockResolvedValue(undefined)
+  validation.validate.mockResolvedValue()
   const sut = new CreateTableController(createTableRepo, validation)
 
-  return { sut, createTableRepo }
+  return { sut, createTableRepo, validation }
 }
 
 describe('CreateTableController', () => {
@@ -24,12 +24,12 @@ describe('CreateTableController', () => {
   })
 
   it('should call validation with right params', async () => {
-    const { sut, createTableRepo } = makeMocks()
+    const { sut, validation } = makeMocks()
     const params = mockTable()
 
     await sut.handle(params)
 
-    expect(createTableRepo.create).toHaveBeenCalledWith(params)
+    expect(validation.validate).toHaveBeenCalledWith(params)
   })
 
   it('should return 201 on success', async () => {
