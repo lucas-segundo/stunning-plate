@@ -3,17 +3,20 @@ import { HTTPResponse } from '../../interfaces/Controller'
 import { mockBookTableUseCase } from 'app/useCases/BookTable/mock'
 import { mockBooking } from 'entities/Booking/mock'
 import { mockBookTableControllerParams } from './mock'
+import { mockValidation } from 'presentation/interfaces/Validation/mock'
 
 const makeMocks = () => {
   const { bookTableUseCase } = mockBookTableUseCase()
+  const validation = mockValidation()
+  validation.validate.mockResolvedValue()
 
-  const sut = new BookTableController(bookTableUseCase)
+  const sut = new BookTableController(bookTableUseCase, validation)
 
   const bookSpy = jest.spyOn(bookTableUseCase, 'book')
   const booking = mockBooking()
   bookSpy.mockResolvedValueOnce(booking)
 
-  return { sut, bookSpy, booking }
+  return { sut, bookSpy, booking, validation }
 }
 
 describe('BookTableController', () => {
@@ -26,6 +29,14 @@ describe('BookTableController', () => {
       ...params,
       date: new Date(params.date),
     })
+  })
+
+  it('should call validation with right params', async () => {
+    const { sut, validation } = makeMocks()
+    const params = mockBookTableControllerParams()
+    await sut.handle(params)
+
+    expect(validation.validate).toHaveBeenCalledWith(params)
   })
 
   it('should return 201 on success', async () => {
