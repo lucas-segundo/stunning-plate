@@ -23,6 +23,15 @@ describe('CreateTableController', () => {
     expect(createTableRepo.create).toHaveBeenCalledWith(params)
   })
 
+  it('should call validation with right params', async () => {
+    const { sut, createTableRepo } = makeMocks()
+    const params = mockTable()
+
+    await sut.handle(params)
+
+    expect(createTableRepo.create).toHaveBeenCalledWith(params)
+  })
+
   it('should return 201 on success', async () => {
     const { sut, createTableRepo } = makeMocks()
     const table = mockTable()
