@@ -5,12 +5,15 @@ import {
 import { CreateUserController } from '.'
 import { mockUser } from 'entities/User/mock'
 import { HTTPResponse } from '../../interfaces/Controller'
+import { mockValidation } from 'presentation/interfaces/Validation/mock'
 
 const makeMocks = () => {
   const createUserRepo = mockCreateUserRepository()
-  const sut = new CreateUserController(createUserRepo)
+  const validation = mockValidation()
+  validation.validate.mockResolvedValue()
+  const sut = new CreateUserController(createUserRepo, validation)
 
-  return { sut, createUserRepo }
+  return { sut, createUserRepo, validation }
 }
 
 describe('CreateUserController', () => {
@@ -21,6 +24,15 @@ describe('CreateUserController', () => {
     await sut.handle(params)
 
     expect(createUserRepo.create).toHaveBeenCalledWith(params)
+  })
+
+  it('should call validation with right params', async () => {
+    const { validation, sut } = makeMocks()
+
+    const params = mockCreateUserRepositoryParams()
+    await sut.handle(params)
+
+    expect(validation.validate).toHaveBeenCalledWith(params)
   })
 
   it('should return 201 on success', async () => {
