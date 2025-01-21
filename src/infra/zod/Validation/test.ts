@@ -1,7 +1,10 @@
-import { ValidationError } from 'app/errors/ValidationError'
+import {
+  ValidationError,
+  ValidationFieldError,
+} from 'app/errors/ValidationError'
 import { ZodValidation } from './index'
 import { CreateTableControllerParams } from 'presentation/controllers/CreateTable'
-import { z } from 'zod'
+import { SafeParseError, z, ZodError, ZodIssueCode } from 'zod'
 
 const makeMocks = () => {
   const schema = z.object({
@@ -9,7 +12,7 @@ const makeMocks = () => {
   })
   const sut = new ZodValidation(schema)
 
-  return { sut }
+  return { sut, schema }
 }
 
 describe('ZodValidation', () => {
@@ -22,10 +25,36 @@ describe('ZodValidation', () => {
   })
 
   it('should throw error when data is invalid', () => {
-    const { sut } = makeMocks()
+    const { sut, schema } = makeMocks()
+
+    const zodError = new ZodError([
+      {
+        code: ZodIssueCode.too_small,
+        type: 'number',
+        minimum: 1,
+        inclusive: true,
+        path: ['age'],
+        message: 'Value should be greater than or equal to 1',
+      },
+    ])
+    const errorResult: SafeParseError<{ seats: number }> = {
+      success: false,
+      error: zodError,
+    }
+
+    const parseSpy = jest.spyOn(schema, 'safeParseAsync')
+    parseSpy.mockResolvedValue(errorResult)
+
+    const expectedErrors: ValidationFieldError[] = [
+      {
+        code: ZodIssueCode.too_small.toLocaleUpperCase(),
+        name: 'age',
+        message: 'Value should be greater than or equal to 1',
+      },
+    ]
 
     const data: CreateTableControllerParams = { seats: -1 }
     const result = sut.validate(data)
-    expect(result).rejects.toThrow(ValidationError)
+    expect(result).rejects.toThrow(new ValidationError(expectedErrors))
   })
 })
