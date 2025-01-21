@@ -24,12 +24,13 @@ describe('GetTables', () => {
     const params = mockGetTablesRepositoryParams()
     await sut.get(params)
 
+    const { seats } = params.where
     expect(mockedPrismaClient.table.findMany).toHaveBeenCalledWith({
       where: {
         seats: {
-          equals: params.where?.seats?.equals,
-          gte: params.where?.seats?.greaterThanOrEqual,
-          lte: params.where?.seats?.lessThanOrEqual,
+          equals: seats?.equals,
+          gte: seats?.greaterThanOrEqual,
+          lte: seats?.lessThanOrEqual,
         },
       },
     })

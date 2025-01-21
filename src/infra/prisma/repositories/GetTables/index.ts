@@ -8,12 +8,13 @@ import { adaptTableFromPrisma } from 'infra/prisma/adapters/adaptTable'
 
 export class PrismaGetTablesRepository implements GetTablesRepository {
   async get({ where }: GetTablesRepositoryParams): Promise<Table[]> {
+    const { seats } = where
     const prismaTables = await prisma.table.findMany({
       where: {
         seats: {
-          equals: where?.seats?.equals,
-          gte: where?.seats?.greaterThanOrEqual,
-          lte: where?.seats?.lessThanOrEqual,
+          equals: seats?.equals,
+          gte: seats?.greaterThanOrEqual,
+          lte: seats?.lessThanOrEqual,
         },
       },
     })
