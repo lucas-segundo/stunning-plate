@@ -1,9 +1,20 @@
 import { BookTableController } from '.'
 import { HTTPResponse } from '../../interfaces/Controller'
-import { mockBookTableUseCase } from 'app/useCases/BookTable/mock'
+import {
+  mockBookTableUseCase,
+  mockBookTableUseCaseDTO,
+} from 'app/useCases/BookTable/mock'
 import { mockBooking } from 'entities/Booking/mock'
-import { mockBookTableControllerParams } from './mock'
 import { mockValidation } from 'presentation/interfaces/Validation/mock'
+
+export const mockBookTableControllerParams = () => {
+  const dto = mockBookTableUseCaseDTO()
+
+  return {
+    ...dto,
+    date: dto.date.toDateString(),
+  }
+}
 
 const makeMocks = () => {
   const { bookTableUseCase } = mockBookTableUseCase()
