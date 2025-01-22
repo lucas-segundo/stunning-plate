@@ -1,15 +1,10 @@
-import { z } from 'zod'
 import { CreateUserController } from '.'
 import { makePrismaCreateUserRepository } from 'infra/prisma/repositories/CreateUser/factory'
 import { ZodValidation } from 'infra/zod/Validation'
+import { makeCreateUserSchema } from 'infra/zod/schemas/CreateUser'
 
 export const makeCreateUserController = (): CreateUserController => {
-  const validationSchema = z.object({
-    name: z.string().min(3),
-  })
+  const validation = new ZodValidation(makeCreateUserSchema())
 
-  return new CreateUserController(
-    makePrismaCreateUserRepository(),
-    new ZodValidation(validationSchema),
-  )
+  return new CreateUserController(makePrismaCreateUserRepository(), validation)
 }
