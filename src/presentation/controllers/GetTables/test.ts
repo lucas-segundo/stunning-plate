@@ -19,7 +19,7 @@ describe('GetTablesController', () => {
   it('should call get tables repo with right params', async () => {
     const { getTablesRepo, sut } = makeMocks()
 
-    const params = mockGetTablesRepositoryParams()
+    const params = mockGetTablesRepositoryParams().where
     await sut.handle(params)
 
     expect(getTablesRepo.get).toHaveBeenCalledWith(params)
@@ -28,7 +28,7 @@ describe('GetTablesController', () => {
   it('should call validation with right params', async () => {
     const { sut, validation } = makeMocks()
 
-    const params = mockGetTablesRepositoryParams()
+    const params = mockGetTablesRepositoryParams().where
     await sut.handle(params)
 
     expect(validation.validate).toHaveBeenCalledWith(params)
@@ -40,7 +40,7 @@ describe('GetTablesController', () => {
     getTablesRepo.get.mockResolvedValueOnce(tables)
 
     const response = (await sut.handle(
-      mockGetTablesRepositoryParams(),
+      mockGetTablesRepositoryParams().where,
     )) as HTTPResponse
 
     expect(response.data).toBe(tables)

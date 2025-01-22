@@ -10,7 +10,7 @@ import {
 import { UseErrorHandler } from 'presentation/decorators/ErrorHandler'
 import { Validation } from 'presentation/interfaces/Validation'
 
-export type GetTablesControllerParams = GetTablesRepositoryParams
+export type GetTablesControllerParams = GetTablesRepositoryParams['where']
 
 export class GetTablesController implements Controller {
   constructor(
@@ -20,10 +20,10 @@ export class GetTablesController implements Controller {
 
   @UseErrorHandler()
   async handle(
-    params: GetTablesRepositoryParams,
+    params: GetTablesControllerParams,
   ): Promise<HTTPResponse | HTTPErrorResponse> {
     await this.validation.validate(params)
-    const tables = await this.getTablesRepo.get(params)
+    const tables = await this.getTablesRepo.get({ where: params })
     return new HTTPResponse(tables, 200)
   }
 }
