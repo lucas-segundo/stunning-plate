@@ -1,15 +1,13 @@
 import { CreateTableController } from '.'
 import { makePrismaCreateTableRepository } from 'infra/prisma/repositories/CreateTable/factory'
-import { z } from 'zod'
 import { ZodValidation } from 'infra/zod/Validation'
+import { makeCreateTableSchema } from 'infra/zod/schemas/CreateTable'
 
 export const makeCreateTableController = (): CreateTableController => {
-  const validationSchema = z.object({
-    seats: z.number().positive(),
-  })
+  const validation = new ZodValidation(makeCreateTableSchema())
 
   return new CreateTableController(
     makePrismaCreateTableRepository(),
-    new ZodValidation(validationSchema),
+    validation,
   )
 }
