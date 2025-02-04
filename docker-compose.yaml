@@ -10,7 +10,7 @@ services:
     volumes:
       - .:/app
     environment:
-      - POSTGRES_DATABASE_URL=${POSTGRES_DATABASE_URL}
+      - POSTGRES_CONNECTION_STRING=${POSTGRES_CONNECTION_STRING}
     depends_on:
       - db
   db:
