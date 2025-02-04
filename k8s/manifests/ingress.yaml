@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: plate-ingress
+  annotations:
+    kubernetes.io/ingress.class: 'nginx'
+spec:
+  rules:
+    - host: k8slearning.duckdns.org
+      http:
+        paths:
+          - pathType: Prefix
+            path: '/'
+            backend:
+              service:
+                name: plate-service
+                port:
+                  number: 3000
