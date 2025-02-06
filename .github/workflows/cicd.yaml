@@ -50,6 +50,6 @@ jobs:
         id: install
 
       - name: Upgrade Helm Chart
-        run: helm upgrade --install plate helm/ \
+        run: helm upgrade plate helm/ --install \
           --set image.tag=${{ github.ref_name }} \
           --set secret.data.DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }} \
