@@ -44,3 +44,12 @@ jobs:
           target: prod
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4.2.0
+        id: install
+
+      - name: Upgrade Helm Chart
+        run: helm upgrade --install plate helm/ \
+          --set image.tag=${{ github.ref_name }} \
+          --set secret.data.DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }} \
