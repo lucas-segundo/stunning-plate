@@ -11,6 +11,16 @@ class TestClass {
 }
 
 describe('UseErrorHandler', () => {
+  let consoleErrorSpy: jest.SpyInstance
+
+  beforeAll(() => {
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+  })
+
+  afterAll(() => {
+    consoleErrorSpy.mockRestore()
+  })
+
   it('should call the original method', async () => {
     const testClass = new TestClass()
 
