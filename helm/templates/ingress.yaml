@@ -13,4 +13,5 @@ spec:
             backend:
               service:
                 name: plate-service
-                port: 3000
+                port:
+                  number: 3000
