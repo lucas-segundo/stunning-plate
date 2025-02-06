@@ -1,0 +1,11 @@
+image:
+  repository: lucasfernandesapp/plate
+  tag: ''
+
+configmap:
+  name: plate-config
+  data: {}
+
+secret:
+  name: plate-secret
+  data: {}

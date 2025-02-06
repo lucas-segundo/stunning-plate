@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: plate-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: plate
+  template:
+    metadata:
+      labels:
+        app: plate
+    spec:
+      containers:
+        - name: plate
+          image: '{{ .Values.image.repository }}:{{ .Values.image.tag }}'
+          resources:
+            limits:
+              memory: '128Mi'
+              cpu: '500m'
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: {{.Values.configmap.name }}
+            - secretRef:
+                name: {{ .Values.secret.name }}
