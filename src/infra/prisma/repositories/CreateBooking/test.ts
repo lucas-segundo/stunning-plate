@@ -15,16 +15,16 @@ const makeMocks = () => {
 
 describe('CreateBooking', () => {
   it('should create with right params', async () => {
-    const { sut, prismaBooking } = makeMocks()
+    const { sut } = makeMocks()
     const booking = mockBooking()
 
     await sut.create(booking)
 
-    expect(mockedPrismaClient.table.create).toHaveBeenCalledWith({
+    expect(mockedPrismaClient.booking.create).toHaveBeenCalledWith({
       data: {
-        userID: Number(prismaBooking.userID),
-        tableID: Number(prismaBooking.tableID),
-        date: prismaBooking.date,
+        userID: Number(booking.userID),
+        tableID: Number(booking.tableID),
+        date: booking.date,
       },
       select: {
         id: true,
