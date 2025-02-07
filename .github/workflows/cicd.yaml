@@ -42,9 +42,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/plate:${{ github.ref_name }}
 
-      - name: Set up Kubectl
-        uses: azure/setup-kubectl@v4
-
       - name: Install Helm
         uses: azure/setup-helm@v4.2.0
 
