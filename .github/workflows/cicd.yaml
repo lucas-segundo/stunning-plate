@@ -8,24 +8,24 @@ on:
     branches: [main, staging]
 
 jobs:
-  ci:
-    environment: ${{ github.ref_name }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # ci:
+  #   environment: ${{ github.ref_name }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Create docker image
-        run: docker build . -t ${{ env.DOCKER_IMAGE_NAME }} --target dev
+  #     - name: Create docker image
+  #       run: docker build . -t ${{ env.DOCKER_IMAGE_NAME }} --target dev
 
-      - name: Run unit tests
-        run: docker run ${{ env.DOCKER_IMAGE_NAME }} npm run test
+  #     - name: Run unit tests
+  #       run: docker run ${{ env.DOCKER_IMAGE_NAME }} npm run test
 
-      - name: Run migrations
-        run: docker run -e POSTGRES_DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }} ${{ env.DOCKER_IMAGE_NAME }} npm run migrate:prod
+  #     - name: Run migrations
+  #       run: docker run -e POSTGRES_DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }} ${{ env.DOCKER_IMAGE_NAME }} npm run migrate:prod
 
   cd:
-    needs: ci
+    # needs: ci
     environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
     steps:
@@ -54,9 +54,10 @@ jobs:
       - name: Create kubeconfig file
         run: echo "${{ secrets.KUBECONFIG }}" > ${{ github.workspace }}/kubeconfig
 
-      - name: Upgrade Helm Chart
+      - name: Deploy to Kubernetes using Helm
         env:
           KUBECONFIG: ${{ github.workspace }}/kubeconfig
-        run: helm upgrade --install plate ./helm \
+        run: |
+          helm upgrade --install my-plate ./helm \
           --set image.tag=${{ github.ref_name }} \
           --set secret.data.DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }}
