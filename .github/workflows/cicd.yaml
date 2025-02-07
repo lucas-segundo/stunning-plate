@@ -45,15 +45,18 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}
 
+      - name: Set up Kubectl
+        uses: azure/setup-kubectl@v4
+
       - name: Install Helm
         uses: azure/setup-helm@v4.2.0
-        id: install
 
-      - name: Set up kubeconfig
-        run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+      - name: Create kubeconfig file
+        run: echo "${{ secrets.KUBECONFIG }}" > ${{ github.workspace }}/kubeconfig
 
       - name: Upgrade Helm Chart
-        shell: bash
+        env:
+          KUBECONFIG: ${{ github.workspace }}/kubeconfig
         run: helm upgrade --install plate ./helm \
           --set image.tag=${{ github.ref_name }} \
           --set secret.data.DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }}
