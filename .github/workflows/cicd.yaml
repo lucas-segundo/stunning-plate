@@ -1,31 +1,28 @@
 name: CI/CD
 
-env:
-  DOCKER_IMAGE_NAME: plate:${{ github.ref_name }}
-
 on:
   push:
     branches: [main, staging]
 
 jobs:
-  # ci:
-  #   environment: ${{ github.ref_name }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  ci:
+    environment: ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Create docker image
-  #       run: docker build . -t ${{ env.DOCKER_IMAGE_NAME }} --target dev
+      - name: Create docker image
+        run: docker build . -t ${{ github.ref_name }} --target dev
 
-  #     - name: Run unit tests
-  #       run: docker run ${{ env.DOCKER_IMAGE_NAME }} npm run test
+      - name: Run unit tests
+        run: docker run ${{ github.ref_name }} npm run test
 
-  #     - name: Run migrations
-  #       run: docker run -e POSTGRES_DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }} ${{ env.DOCKER_IMAGE_NAME }} npm run migrate:prod
+      - name: Run migrations
+        run: docker run -e POSTGRES_DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }} ${{ github.ref_name }} npm run migrate:prod
 
   cd:
-    # needs: ci
+    needs: ci
     environment: ${{ github.ref_name }}
     runs-on: ubuntu-latest
     steps:
@@ -43,7 +40,7 @@ jobs:
         with:
           target: prod
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/plate:${{ github.ref_name }}
 
       - name: Set up Kubectl
         uses: azure/setup-kubectl@v4
@@ -58,6 +55,7 @@ jobs:
         env:
           KUBECONFIG: ${{ github.workspace }}/kubeconfig
         run: |
-          helm upgrade --install my-plate ./helm \
+          helm upgrade --install plate ./helm \
+          --set image.repository=${{ secrets.DOCKERHUB_USERNAME }}/plate \
           --set image.tag=${{ github.ref_name }} \
           --set secret.data.DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }}

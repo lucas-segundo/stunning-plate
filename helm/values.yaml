@@ -1,5 +1,5 @@
 image:
-  repository: lucasfernandesapp/plate
+  repository: ''
   tag: ''
 
 configmap:
