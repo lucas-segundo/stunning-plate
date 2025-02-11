@@ -1,5 +1,7 @@
 namespace: app
 
+host: k8s.lucassegundo.work
+
 image:
   repository: ''
   tag: ''

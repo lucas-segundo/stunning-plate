@@ -3,10 +3,17 @@ kind: Ingress
 metadata:
   name: plate-ingress
   namespace: {{ .Values.namespace }}
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+      - {{ .Values.host }}
+      secretName: tls-secret
   rules:
-    - host: k8s.lucassegundo.work
+    - host: {{ .Values.host }}
       http:
         paths:
           - pathType: Prefix
