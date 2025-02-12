@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: plate-deployment
-  namespace: {{ .Values.namespace }}
+  name: {{ .Values.app.name }}-deployment
+  namespace: {{ .Values.app.namespace }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.app.replicas }}
   selector:
     matchLabels:
-      app: plate
+      app: {{ .Values.app.name }}
   template:
     metadata:
       labels:
-        app: plate
+        app: {{ .Values.app.name }}
     spec:
       containers:
-        - name: plate
+        - name: {{ .Values.app.name }}
           image: '{{ .Values.image.repository }}:{{ .Values.image.tag }}'
           resources:
             limits:
-              cpu: '100m'
-              memory: '200Mi'
+              cpu: {{ .Values.app.limits.cpu }}
+              memory: {{ .Values.app.limits.memory }}
           ports:
-            - containerPort: 3000
+            - containerPort: {{ .Values.app.port }}
           envFrom:
             - configMapRef:
                 name: {{.Values.configmap.name }}

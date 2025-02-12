@@ -1,10 +1,20 @@
-namespace: app
+app:
+  name: plate
+  namespace: ''
+  port: 3000
+  replicas: 2
+  limits:
+    cpu: '100m'
+    memory: '200Mi'
 
-host: k8s.lucassegundo.work
+host: ''
 
 image:
   repository: ''
   tag: ''
+
+tls:
+  email: ''
 
 configmap:
   name: plate-config

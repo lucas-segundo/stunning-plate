@@ -5,7 +5,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: lucas.fernandes.app@gmail.com
+    email: {{ .Values.tls.email }}
     privateKeySecretRef:
       name: tls-secret
     solvers:
