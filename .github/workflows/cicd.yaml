@@ -1,13 +1,11 @@
 name: CI/CD
 
-# on:
-#   push:
-#     branches: [main, staging]
+on:
+  push:
+    branches: [main, staging]
 
 env:
-  DOCKER_IMAGE_REPOSITORY: ${{ vars.REGISTRY_NAME }}/plate
   BRANCH: ${{ github.ref_name }}
-  KUBECONFIG_FILE_PATH: ${{ github.workspace }}/kubeconfig
 
 jobs:
   ci:
@@ -23,12 +21,15 @@ jobs:
       - name: Run unit tests
         run: docker run ${{ env.BRANCH }} npm run test
 
-      - name: Run migrations
-        run: docker run -e POSTGRES_DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }} ${{ env.BRANCH }} npm run migrate:prod
+      # - name: Run migrations
+      #   run: docker run -e POSTGRES_DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }} ${{ env.BRANCH }} npm run migrate:prod
 
   cd:
     needs: ci
     environment: ${{ github.ref_name }}
+    env:
+      DOCKER_IMAGE_REPOSITORY: ${{ vars.REGISTRY_NAME }}/plate
+      KUBECONFIG_FILE_PATH: ${{ github.workspace }}/kubeconfig
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -48,17 +49,17 @@ jobs:
           push: true
           tags: '${{ env.DOCKER_IMAGE_REPOSITORY }}:${{ env.BRANCH }}'
 
-      - name: Install Helm
-        uses: azure/setup-helm@v4.2.0
+      # - name: Install Helm
+      #   uses: azure/setup-helm@v4.2.0
 
-      - name: Create kubeconfig file
-        run: echo "${{ secrets.KUBECONFIG }}" > ${{ env.KUBECONFIG_FILE_PATH }}
+      # - name: Create kubeconfig file
+      #   run: echo "${{ secrets.KUBECONFIG }}" > ${{ env.KUBECONFIG_FILE_PATH }}
 
-      - name: Deploy to Kubernetes using Helm
-        env:
-          KUBECONFIG: ${{ env.KUBECONFIG_FILE_PATH }}
-        run: |
-          helm upgrade --install plate ./helm \
-          --set image.repository=${{ env.DOCKER_IMAGE_REPOSITORY }} \
-          --set image.tag=${{ env.BRANCH }} \
-          --set secret.data.DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }}
+      # - name: Deploy to Kubernetes using Helm
+      #   env:
+      #     KUBECONFIG: ${{ env.KUBECONFIG_FILE_PATH }}
+      #   run: |
+      #     helm upgrade --install plate ./helm \
+      #     --set image.repository=${{ env.DOCKER_IMAGE_REPOSITORY }} \
+      #     --set image.tag=${{ env.BRANCH }} \
+      #     --set secret.data.DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }}
