@@ -6,6 +6,10 @@ app:
   limits:
     cpu: '100m'
     memory: '200Mi'
+  startupProbe:
+    path: /healthz/startup
+    failureThreshold: 2
+    periodSeconds: 5
 
 isDevelopment: false
 
