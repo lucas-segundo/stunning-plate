@@ -9,4 +9,4 @@ spec:
   ports:
     - port: {{ .Values.app.port }}
       protocol: TCP
-  type: ClusterIP
+  type: {{ if .Values.isDevelopment }}LoadBalancer{{ else }}ClusterIP{{ end }}
