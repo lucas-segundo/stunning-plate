@@ -2,7 +2,10 @@ app:
   name: plate
   namespace: ''
   port: 3000
-  replicas: 2
+  hpa:
+    minReplicas: 2
+    maxReplicas: 5
+    cpuPercentage: 80
   limits:
     cpu: '300m'
     memory: '256Mi'
@@ -10,7 +13,7 @@ app:
     isEnabled: true
     path: /healthz/startup
     failureThreshold: 3
-    periodSeconds: 10
+    periodSeconds: 5
 
 isDevelopment: false
 
