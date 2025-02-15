@@ -24,7 +24,7 @@ spec:
             - containerPort: {{ .Values.app.port }}
           envFrom:
             - configMapRef:
-                name: {{.Values.configmap.name }}
+                name: {{ .Values.configmap.name }}
             - secretRef:
                 name: {{ .Values.secret.name }}
           {{ if .Values.app.startupProbe.isEnabled }}
