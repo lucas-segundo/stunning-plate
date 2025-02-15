@@ -4,12 +4,13 @@ app:
   port: 3000
   replicas: 2
   limits:
-    cpu: '100m'
-    memory: '200Mi'
+    cpu: '300m'
+    memory: '256Mi'
   startupProbe:
+    isEnabled: true
     path: /healthz/startup
-    failureThreshold: 2
-    periodSeconds: 5
+    failureThreshold: 3
+    periodSeconds: 10
 
 isDevelopment: false
 

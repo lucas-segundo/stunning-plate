@@ -27,9 +27,11 @@ spec:
                 name: {{.Values.configmap.name }}
             - secretRef:
                 name: {{ .Values.secret.name }}
+          {{ if .Values.app.startupProbe.isEnabled }}
           startupProbe:
             httpGet:
               path: {{ .Values.app.startupProbe.path }}
               port: {{ .Values.app.port }}
             failureThreshold: {{ .Values.app.startupProbe.failureThreshold }}
             periodSeconds: {{ .Values.app.startupProbe.periodSeconds }}
+          {{ end }}
