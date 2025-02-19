@@ -5,7 +5,7 @@ services:
       target: ${DOCKER_COMPOSE_TARGET:-dev}
     image: ${DOCKER_IMAGE_NAME:-app}
     ports:
-      - ${DOCKER_COMPOSE_APP_PORT:-3000}:3000
+      - ${DOCKER_COMPOSE_APP_PORT:-3000}:${PORT:-3000}
       - ${DOCKER_COMPOSE_APP_DEBUG_PORT:-9229}:9229
     volumes:
       - .:/app
@@ -21,3 +21,21 @@ services:
       - ./pgdata:/var/lib/postgresql/data
     ports:
       - ${DOCKER_COMPOSE_DB_PORT:-5432}:5432
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3001:3000
+    container_name: grafana
+    depends_on:
+      - prometheus
