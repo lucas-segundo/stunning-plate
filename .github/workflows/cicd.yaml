@@ -4,9 +4,6 @@ on:
   push:
     branches: [main, staging]
 
-env:
-  BRANCH: ${{ github.ref_name }}
-
 jobs:
   ci:
     environment: ${{ github.ref_name }}
@@ -16,17 +13,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create docker image
-        run: docker build . -t ${{ env.BRANCH }} --target dev
+        run: docker build . -t ${{ github.ref_name }} --target dev
 
       - name: Run unit tests
-        run: docker run ${{ env.BRANCH }} npm run test
+        run: docker run ${{ github.ref_name }} npm run test
 
   cd:
     needs: ci
     environment: ${{ github.ref_name }}
     env:
-      DOCKER_IMAGE_REPOSITORY: ${{ vars.REGISTRY_USERNAME }}/plate
-      KUBECONFIG_FILE_PATH: ${{ github.workspace }}/kubeconfig
+      DOCKER_IMAGE_REPOSITORY: '${{ vars.REGISTRY_USERNAME }}/plate'
+      DOCKER_IMAGE_TAG: '${{ github.ref_name }}-${{ github.sha }}'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,4 +40,4 @@ jobs:
         with:
           target: prod
           push: true
-          tags: '${{ env.DOCKER_IMAGE_REPOSITORY }}:${{ env.BRANCH }}'
+          tags: '${{ env.DOCKER_IMAGE_REPOSITORY }}:${{ env.DOCKER_IMAGE_TAG }}'
