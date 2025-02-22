@@ -22,8 +22,7 @@ jobs:
     needs: ci
     environment: ${{ github.ref_name }}
     env:
-      DOCKER_IMAGE_REPOSITORY: '${{ vars.REGISTRY_USERNAME }}/plate'
-      DOCKER_IMAGE_TAG: '${{ github.ref_name }}-${{ github.sha }}'
+      DOCKER_IMAGE: '${{ vars.REGISTRY_USERNAME }}/plate:${{ github.ref_name }}-${{ github.sha }}'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,4 +39,20 @@ jobs:
         with:
           target: prod
           push: true
-          tags: '${{ env.DOCKER_IMAGE_REPOSITORY }}:${{ env.DOCKER_IMAGE_TAG }}'
+          tags: ${{ env.DOCKER_IMAGE }}
+
+      - name: Setup kustomize
+        run: |
+          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+          sudo mv kustomize /usr/local/bin/
+
+      - name: Set image
+        run: |
+          cd k8s/overlays/dev
+          kustomize edit set image ${{ env.DOCKER_IMAGE }}
+
+      - name: Commit
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Actions"
+          git commit -am "Bump docker version"
