@@ -1,1 +1,0 @@
-sudo ~/go/bin/cloud-provider-kind -enable-lb-port-mapping
