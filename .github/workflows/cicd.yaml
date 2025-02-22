@@ -42,17 +42,23 @@ jobs:
           tags: ${{ env.DOCKER_IMAGE }}
 
       - name: Setup kustomize
-        run: |
-          curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
-          sudo mv kustomize /usr/local/bin/
+        run: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
 
       - name: Set image
         run: |
           cd k8s/overlays/dev
           kustomize edit set image ${{ env.DOCKER_IMAGE }}
 
-      - name: Commit
+      - name: Config git
         run: |
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Actions"
-          git commit -am "Bump docker version"
+
+      - name: Commit
+        run: git commit -am "Bump docker version"
+
+      - name: Push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
