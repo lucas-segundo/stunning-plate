@@ -15,6 +15,8 @@ app:
     failureThreshold: 3
     periodSeconds: 5
 
+isDevelopment: false
+
 host: ''
 
 image:
