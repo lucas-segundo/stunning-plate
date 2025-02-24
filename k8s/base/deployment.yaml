@@ -15,3 +15,6 @@ spec:
           image: lucasfernandesapp/plate:main
           ports:
             - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: plate-secret
