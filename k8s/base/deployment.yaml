@@ -18,3 +18,5 @@ spec:
           envFrom:
             - secretRef:
                 name: plate-secret
+            - configMapRef:
+                name: plate-config
