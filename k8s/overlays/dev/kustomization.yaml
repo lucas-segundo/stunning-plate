@@ -13,4 +13,4 @@ namespace: dev
 images:
 - name: plate
   newName: lucasfernandesapp/plate
-  newTag: main-bd62166b6a1cafdfe5deb3322579222a035d3cec
+  newTag: main-7de597164be50f4c6ba69b372525f2e2948c0cd3
