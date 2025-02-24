@@ -6,7 +6,8 @@ resources:
   - service.yaml
   - hpa.yaml
 
-commonLabels:
-  app: plate
-
 namePrefix: plate-
+labels:
+  - includeSelectors: true
+    pairs:
+      app: plate
