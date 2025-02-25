@@ -6,7 +6,7 @@ spec:
   template:
     spec:
       containers:
-        - name: plate
+        - name: container
           ports:
             - containerPort: 3000
           envFrom:
