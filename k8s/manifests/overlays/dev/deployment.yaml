@@ -7,7 +7,6 @@ spec:
     spec:
       containers:
         - name: plate
-          image: lucasfernandesapp/plate:main
           resources:
             limits:
               cpu: 300m
