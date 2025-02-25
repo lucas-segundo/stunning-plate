@@ -47,7 +47,7 @@ jobs:
       - name: Set image
         run: |
           cd k8s/overlays/dev
-          kustomize edit set image plate=${{ env.DOCKER_IMAGE }}
+          kustomize edit set image appImage=${{ env.DOCKER_IMAGE }}
 
       - name: Config git
         run: |
