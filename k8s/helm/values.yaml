@@ -1,6 +1,6 @@
 app:
-  name: plate
   namespace: ''
+  image: ''
   port: 3000
   hpa:
     minReplicas: 2
@@ -9,19 +9,8 @@ app:
   limits:
     cpu: '300m'
     memory: '256Mi'
-  startupProbe:
-    isEnabled: true
-    path: /healthz/startup
-    failureThreshold: 3
-    periodSeconds: 5
-
-isDevelopment: false
 
 host: ''
-
-image:
-  repository: ''
-  tag: ''
 
 tls:
   email: ''

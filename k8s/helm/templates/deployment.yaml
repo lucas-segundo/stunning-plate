@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.app.name }}-deployment
+  name: {{ .Release.Name }}-deployment
   namespace: {{ .Values.app.namespace }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.app.name }}
+      app: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.app.name }}
+        app: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ .Values.app.name }}
-          image: '{{ .Values.image.repository }}:{{ .Values.image.tag }}'
+        - name: {{ .Release.Name }}
+          image: {{ .Values.app.image }}
           resources:
             limits:
               cpu: {{ .Values.app.limits.cpu }}
@@ -26,11 +26,3 @@ spec:
                 name: {{ .Values.configmap.name }}
             - secretRef:
                 name: {{ .Values.secret.name }}
-          {{ if .Values.app.startupProbe.isEnabled }}
-          startupProbe:
-            httpGet:
-              path: {{ .Values.app.startupProbe.path }}
-              port: {{ .Values.app.port }}
-            failureThreshold: {{ .Values.app.startupProbe.failureThreshold }}
-            periodSeconds: {{ .Values.app.startupProbe.periodSeconds }}
-          {{ end }}
