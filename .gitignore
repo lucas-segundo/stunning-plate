@@ -60,3 +60,4 @@ pgdata
 
 # Kubernetes
 .kube
+sealed-secret.yaml
