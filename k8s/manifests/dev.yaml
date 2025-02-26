@@ -1,29 +1,44 @@
+---
+# Source: helm/templates/namespace.yaml
 apiVersion: v1
 kind: Namespace
 metadata:
   name: dev
 ---
+# Source: helm/templates/config.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: plate-secret
+  namespace: dev
+data:
+---
+# Source: helm/templates/config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: plate-config
+  namespace: dev
+data:
+---
+# Source: helm/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    app: plate
   name: plate-service
   namespace: dev
 spec:
-  ports:
-  - port: 80
-    protocol: TCP
-    targetPort: 3000
   selector:
     app: plate
+  ports:
+    - port: 3000
+      protocol: TCP
   type: ClusterIP
 ---
+# Source: helm/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: plate
   name: plate-deployment
   namespace: dev
 spec:
@@ -36,64 +51,51 @@ spec:
         app: plate
     spec:
       containers:
-      - envFrom:
-        - secretRef:
-            name: secret
-        image: lucasfernandesapp/plate:main-7de597164be50f4c6ba69b372525f2e2948c0cd3
-        name: plate-container
-        ports:
-        - containerPort: 3000
-        resources:
-          limits:
-            cpu: 300m
-            memory: 256Mi
+        - name: plate
+          image: main
+          resources:
+            limits:
+              cpu: 300m
+              memory: 256Mi
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: plate-config
+            - secretRef:
+                name: plate-secret
 ---
+# Source: helm/templates/hpa.yaml
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  labels:
-    app: plate
   name: plate-hpa
   namespace: dev
 spec:
-  maxReplicas: 6
-  minReplicas: 3
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: Deployment
     name: plate-deployment
+    kind: Deployment
+  minReplicas: 2
+  maxReplicas: 5
   targetCPUUtilizationPercentage: 80
 ---
-apiVersion: bitnami.com/v1alpha1
-kind: SealedSecret
-metadata:
-  creationTimestamp: null
-  name: secret
-  namespace: dev
-spec:
-  encryptedData:
-    POSTGRES_DATABASE_URL: AgB6ZOpxXKJi6IM/VCdx+4QfiA8ny5ltqF37WHjJfJgAWdDOycEYLwFRfuOX84JP+d5lCtaxtClsqWk+BXP+MVXu9oe+KicgnoNAU8pipWkqWfH83a8DhWyJVaj+/atC2Q02TpB5clXfVXMZswsHtUWT8oYxsVf85eWfWue8DPeElgbF6LmuggdSdx/+e5wJ0bEflTkpK9/k4smrDRf9iy8WSxS+XwQVs62Pfm6yRgDCo2xTBotdgAKqtkR9OwsfKnZCUEqVyjqAfkPtvhfUsBJaBGjxzMpwKlpr8moJ0vMIdUhgUTqeRGk3F44ZfOyFGPxdx0/jSnMwkCi2+thoKhVUKiJ0JF4gFpsYLHhttgtVlv6Oj7JiDn59gcodmDxh7WfbradPzIArtEEDPcdQxjAzwuTwbjMmi1qiWuL7yK6eW6vRJwLi9ndpPB/tfv/1nu5cPrF6EfJ5UGT5KJwFjQ8ai4VaZAWF69XsMEPrAyK8LIC9jLLaiGeuOr3bllmmeQR0j0AYXvFVIY5vuO+LUtXxk+jSC18gNIwIf4u5CBjyQRLQQGxPPwppjPjhMOmEmRionyULkto1roNZ6XeRE3FFSsmNJxKbgQXWAllW54+ddAH0PkjI3ssHZyFAZYvRo7I1MnEf4pL1SE0dgsaroj2fGc4BZv7xRiTGjo6eypRG2zSGn0fZIIbkISsLcUwzCpzw2IQXT72bXnwuoZIsEjmvhEah3AhpZhLtqdv+Dz4Lw2C9350/tKoXY++KU0+B86Ln0x7S/zLcVhLGFp4sS/iEZkDPFiNv4gbFhJHlGWEE7eoM546Y9WdfVi6twlCeTaaa99rItH6CuX2Kn/YM35E=
-  template:
-    metadata:
-      creationTimestamp: null
-      name: secret
-      namespace: dev
----
+# Source: helm/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  labels:
-    app: plate
   name: plate-ingress
   namespace: dev
+  
 spec:
+  
   rules:
-  - http:
-      paths:
-      - backend:
-          service:
-            name: plate-service
-            port:
-              number: 80
-        path: /
-        pathType: Prefix
+    - http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: plate-service
+                port:
+                  number: 80
