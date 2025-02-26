@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
         - name: plate
-          image: main
+          image: 
           resources:
             limits:
               cpu: 300m
@@ -70,8 +70,9 @@ kind: Ingress
 metadata:
   name: plate-ingress
   namespace: dev
-
+  
 spec:
+  
   rules:
     - http:
         paths:
@@ -82,19 +83,3 @@ spec:
                 name: plate-service
                 port:
                   number: 80
----
-# Source: helm/templates/sealed-secret.yaml
-apiVersion: bitnami.com/v1alpha1
-kind: SealedSecret
-metadata:
-  creationTimestamp: null
-  name: secret
-  namespace: dev
-spec:
-  encryptedData:
-    POSTGRES_DATABASE_URL: AgBTkXpwiMiYnShZbuGpqWoO5/IYfeZrHPnkkFSmsuP+saALO2bORWxRtI+4mpZ/iuiOgTDhowJ7nc5FF3tRYAzbCBOb8WKCbLz5ESmliQ+dtg0Lk9j3ZBNlRJxj6OoAyyYCo7zs3lfDmdxz1KN2+EuobC62D4sN6KrWBQt8VG5tPxhKlcj8aoL3qYBfdDRZqT9bAZuZ97RRsfVlK9jwtFe1A9DZe0jdDpyrAs3erpTc6ROxXyVTC2Y+3esOH8QPdjxJ+C5/C1b2z4rBmhb0i87padTYsmmNBCT9kvh+ZtAHNzlR4S3jhIOQSo4mEhK+QDpKSU8hxz3NgrD2ipIpZcgfurgaFW6P3XWoluj4tks2mPWBT0H9pBBuudwsGRk5XS18KhHn0BVwGOx/coaojUFCRwO4TOxdPT7L0m5FHg/tb3GDkJbNbjAfn9PSi48Uis6SZ73yCgSmjG5Zyj/O9zoknnW52NFWjgjT8DCCXQ9itSmoN07YOoQPNRcthszdWGJxrw+uK9dR9W6wh5E+QNpKPWS6/mqlM/8QOxxqW0sO5jilu1kMIu2sJwdNySx3R8vy4THiFx1sPQIYzssGcD1JUUof8lZTFHnMPFUUq+V6MCir3JVYfN6HIG5zOIYVXcg1ZRln+EsZ/Lqcr6Fjc5xDU5DSv+vt/qb+Rc9OAbamImy9SN5oCXqlo1nWweuObiNHcdogQTzz+EYKf0bi/CjteCPh8kEHhEt/Uv9FsQOI/LwQHJd+KbNe3GD2r4ufNthZRdqoUphgPl5gRr+/B3DznOQue5PihPx9iguwUfAniPX0RrjXX8drQUbauchfjsvnD9RjXmS428jOjAB0NtI=
-  template:
-    metadata:
-      creationTimestamp: null
-      name: secret
-      namespace: dev
