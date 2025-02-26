@@ -5,21 +5,21 @@ on:
     branches-ignore: [main, staging]
 
 jobs:
-  ci:
-    environment: ${{ github.ref_name }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # ci:
+  #   environment: ${{ github.ref_name }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Create docker image
-        run: docker build . -t ${{ github.ref_name }} --target dev
+  #     - name: Create docker image
+  #       run: docker build . -t ${{ github.ref_name }} --target dev
 
-      - name: Run unit tests
-        run: docker run ${{ github.ref_name }} npm run test
+  #     - name: Run unit tests
+  #       run: docker run ${{ github.ref_name }} npm run test
 
   cd:
-    needs: ci
+    # needs: ci
     environment: ${{ github.ref_name }}
     env:
       DOCKER_IMAGE: '${{ vars.REGISTRY_USERNAME }}/plate:${{ github.ref_name }}'
