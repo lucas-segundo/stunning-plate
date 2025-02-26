@@ -44,8 +44,7 @@ spec:
           ports:
             - containerPort: 3000
           envFrom:
-            - configMapRef:
-                name: plate-config
+            
             - secretRef:
                 name: plate-secret
 ---
