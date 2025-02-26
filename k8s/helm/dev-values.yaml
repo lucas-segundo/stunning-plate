@@ -23,4 +23,3 @@ configmap:
 
 secret:
   name: plate-secret
-  data: {}

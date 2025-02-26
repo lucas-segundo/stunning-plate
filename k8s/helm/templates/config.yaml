@@ -9,16 +9,3 @@ data:
   {{ $key }}: "{{ $val }}"
   {{- end }}
 {{ end }}
-
-{{ if .Values.secret.data }}
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ .Values.secret.name }}
-  namespace: {{ .Values.app.namespace }}
-data: 
-  {{- range $key, $val := .Values.secret.data }}
-  {{ $key }}: {{ $val | toString | b64enc | quote }}
-  {{- end }}
-{{ end }}
