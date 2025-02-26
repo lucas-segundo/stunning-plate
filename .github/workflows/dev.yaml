@@ -1,4 +1,4 @@
-name: Deploy
+name: Dev
 
 on:
   push:
@@ -41,14 +41,18 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_IMAGE }}
 
-      - name: Setup kustomize
-        run: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+      - name: Setup helm
+        uses: azure/setup-helm@v4.3.0
+        with:
+          version: v3
 
       - name: Build manifest
         run: |
-          cd k8s/kustomize/overlays/dev
-          kustomize edit set image appImage=${{ env.DOCKER_IMAGE }}
-          kustomize build . > ./k8s/manifests/dev.yaml
+          cd k8s/helm
+          helm template plate . \
+          --values dev-values.yaml \
+          --set image=${{ env.DOCKER_IMAGE }} \
+          > ./k8s/manifests/dev.yaml
 
       - name: Config git
         run: |
