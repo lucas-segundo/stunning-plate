@@ -1,6 +1,6 @@
 app:
   namespace: 'dev'
-  image: 'main'
+  image: ''
   port: 3000
   hpa:
     minReplicas: 2

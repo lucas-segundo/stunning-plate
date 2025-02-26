@@ -1,3 +1,4 @@
+{{ if .Values.configmap.data }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,6 +8,9 @@ data:
   {{- range $key, $val := .Values.configmap.data }}
   {{ $key }}: "{{ $val }}"
   {{- end }}
+{{ end }}
+
+{{ if .Values.secret.data }}
 ---
 apiVersion: v1
 kind: Secret
@@ -17,3 +21,4 @@ data:
   {{- range $key, $val := .Values.secret.data }}
   {{ $key }}: {{ $val | toString | b64enc | quote }}
   {{- end }}
+{{ end }}

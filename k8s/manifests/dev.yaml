@@ -5,22 +5,6 @@ kind: Namespace
 metadata:
   name: dev
 ---
-# Source: helm/templates/config.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: plate-secret
-  namespace: dev
-data:
----
-# Source: helm/templates/config.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: plate-config
-  namespace: dev
-data:
----
 # Source: helm/templates/service.yaml
 apiVersion: v1
 kind: Service
