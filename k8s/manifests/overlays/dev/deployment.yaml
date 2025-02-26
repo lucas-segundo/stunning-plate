@@ -6,7 +6,8 @@ spec:
   template:
     spec:
       containers:
-        - name: container
+        - name: plate-container
+          image: lucasfernandesapp/plate
           resources:
             limits:
               cpu: 300m

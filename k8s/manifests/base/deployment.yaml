@@ -6,8 +6,7 @@ spec:
   template:
     spec:
       containers:
-        - name: container
-          image: appImage
+        - name: plate-container
           ports:
             - containerPort: 3000
           envFrom:

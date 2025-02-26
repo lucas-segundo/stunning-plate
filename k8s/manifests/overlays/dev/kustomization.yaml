@@ -10,6 +10,5 @@ patches:
 
 namespace: dev
 images:
-  - name: appImage
-    newName: lucasfernandesapp/plate
+  - name: lucasfernandesapp/plate
     newTag: main-7de597164be50f4c6ba69b372525f2e2948c0cd3
