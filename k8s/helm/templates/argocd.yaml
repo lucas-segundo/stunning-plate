@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: {{  .Values.git.repoURL }}
+    path: k8s/manifests/
+    targetRevision: {{ .Values.git.branch }}
+    directory:
+      include: {{ .Values.app.manifestFile }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.app.namespace }}

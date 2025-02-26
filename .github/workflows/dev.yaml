@@ -50,6 +50,7 @@ jobs:
         run: |
           helm template plate ./k8s/helm \
           --values ./k8s/helm/dev-values.yaml \
+          --set git.branch=${{ github.ref_name }} \
           --set app.image=${{ env.DOCKER_IMAGE }} > ./k8s/manifests/dev.yaml
 
       - name: Config git
