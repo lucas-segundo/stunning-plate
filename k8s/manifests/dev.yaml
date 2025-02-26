@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
         - name: plate
-          image: 
+          image: lucasfernandesapp/plate:setup_dev_workflow_with_helm
           resources:
             limits:
               cpu: 300m
@@ -83,3 +83,21 @@ spec:
                 name: plate-service
                 port:
                   number: 80
+---
+# Source: helm/templates/argocd.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: plate-argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/lucas-segundo/stunning-plate
+    path: k8s/manifests/
+    targetRevision: setup_dev_workflow_with_helm
+    directory:
+      include: dev.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
