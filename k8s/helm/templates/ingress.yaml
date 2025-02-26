@@ -1,4 +1,4 @@
-{{ if eq .Values.isDevelopment false }}
+{{ if .Values.host }}
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -6,37 +6,43 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: {{ .Values.tls.email }}
+    email: lucas.fernandes.app@gmail.com
     privateKeySecretRef:
       name: tls-secret
     solvers:
     - http01:
         ingress:
           class: nginx
+{{ end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Release.Name }}-ingress
   namespace: {{ .Values.app.namespace }}
+  {{ if .Values.host }}
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     acme.cert-manager.io/http01-edit-in-place: "true"
+  {{ end }}
 spec:
+  {{ if .Values.host }}
   ingressClassName: nginx
   tls:
     - hosts:
       - {{ .Values.host }}
       secretName: tls-secret
+  {{ end }}
   rules:
-    - host: {{ .Values.host }}
-      http:
+    - http:
         paths:
           - pathType: Prefix
-            path: '/'
+            path: /
             backend:
               service:
                 name: {{ .Release.Name }}-service
                 port:
-                  number: {{ .Values.app.port }}
-{{ end }}
+                  number: 80
+      {{ if .Values.host }}
+      host: {{ .Values.host }}
+      {{ end }}

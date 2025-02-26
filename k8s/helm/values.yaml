@@ -1,6 +1,6 @@
 app:
-  namespace: ''
-  image: ''
+  namespace: 'dev'
+  image: 'main'
   port: 3000
   hpa:
     minReplicas: 2
@@ -11,9 +11,6 @@ app:
     memory: '256Mi'
 
 host: ''
-
-tls:
-  email: ''
 
 configmap:
   name: plate-config
