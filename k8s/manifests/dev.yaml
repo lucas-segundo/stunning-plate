@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: plate
+  name: plate-service
+  namespace: dev
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: plate
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: plate
+  name: plate-deployment
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app: plate
+  template:
+    metadata:
+      labels:
+        app: plate
+    spec:
+      containers:
+      - envFrom:
+        - secretRef:
+            name: secret
+        image: lucasfernandesapp/plate:main-7de597164be50f4c6ba69b372525f2e2948c0cd3
+        name: plate-container
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            cpu: 300m
+            memory: 256Mi
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: plate
+  name: plate-hpa
+  namespace: dev
+spec:
+  maxReplicas: 4
+  minReplicas: 2
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: plate-deployment
+  targetCPUUtilizationPercentage: 80
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: secret
+  namespace: dev
+spec:
+  encryptedData:
+    POSTGRES_DATABASE_URL: AgAYZwWjntsCwZCN93n9csbmTV01cB/sSEc+XxcHcjQT/1RH16fpCoZg0cOZmWmZeNZ/BVkWzy3ooX0hK9mjzCImZmZOLN9Ye+cdCO3dwksjU7J+c6919pQRpFV6V9+qwQv8QBQuxIKKG0fWRD95IluwE+QrPKasT4IkiZiD2yoUCsAC8tBzadSWnQbJXkC6LCgRGY4OhjWj7l6PO8vpNRuMrBvtPcduv2U3P7LNaiS5OjqcSsm6oYEqVurWBWtWdDUk2f9lOLfXpEyyIY91va9agdh8FflgGqDVoOY9Ro5a5i7O9mleWuvyyZSlUwkfHSl2gw5Zu5sAjonombg0nlD+D2U8ojaWomstUSK+JFVNoPTFv/pkD23GLFNfHCFRaSmj5WY04gQcYXxPHyBdU1DAlTyoP6K7ZspI1U3BKDh/uvUAscNTeRREroGTDXnExHK96s+ZcZnOGJOqCPAFVfiguoJathMD3cvZP1HK2Ik8ncXt0hpEmcjoYn81B0PKnFx1/iSwNMe9saZmUxZlDCjorbyhU5boVAPAFq0Q0dOXgk6PIrYYM1BD9+SZ/kyWHsDWZJDivGIjyycddeNG3GmiPsQJs2K+EWQDzg1Gt+xcMnrn5yoIk5TAh2N4vqUDve/y3AAB/oJZUQfsxombljl6ZwwZR+hII7ms6+B22WsbKM1KxWhd8etCavyCIJgBoenVDNUu09dE2mGMcLobbQVF1tZvubLwFGBAGHtKUxwR5855g5ZS5ueQMHm67HHgugE4Q0FEOIDdYvAON9sFL6ayQXXUApgArBKVWlv9J/Xs9RTbyDkJWsxKUe805JdbB1o6gXquat5xJbbVbKu9cx4=
+  template:
+    metadata:
+      creationTimestamp: null
+      name: secret
+      namespace: dev
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app: plate
+  name: plate-ingress
+  namespace: dev
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: plate-service
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
