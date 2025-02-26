@@ -1,0 +1,65 @@
+name: Deploy
+
+on:
+  push:
+    branches-ignore: [main, staging]
+
+jobs:
+  ci:
+    environment: ${{ github.ref_name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create docker image
+        run: docker build . -t ${{ github.ref_name }} --target dev
+
+      - name: Run unit tests
+        run: docker run ${{ github.ref_name }} npm run test
+
+  cd:
+    needs: ci
+    environment: ${{ github.ref_name }}
+    env:
+      DOCKER_IMAGE: '${{ vars.REGISTRY_USERNAME }}/plate:${{ github.ref_name }}'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build Prod Docker image and push to registry
+        uses: docker/build-push-action@v6.13.0
+        with:
+          target: prod
+          push: true
+          tags: ${{ env.DOCKER_IMAGE }}
+
+      - name: Setup kustomize
+        run: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+
+      - name: Build manifest
+        run: |
+          cd k8s/kustomize/overlays/dev
+          kustomize edit set image appImage=${{ env.DOCKER_IMAGE }}
+          kustomize build . > ./k8s/manifests/dev.yaml
+
+      - name: Config git
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Commit
+        run: git commit -am "Builds K8S manifest"
+
+      - name: Push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
