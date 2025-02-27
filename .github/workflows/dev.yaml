@@ -52,7 +52,9 @@ jobs:
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
       - name: Create namespace
-        run: kubectl create namespace ${{ github.ref_name }}
+        env:
+          NAMESPACE: $(echo "${{ github.ref_name }}" | tr '_' '-')
+        run: kubectl create namespace ${{ env.NAMESPACE }}
 
       - name: Setup kubeseal
         env:
