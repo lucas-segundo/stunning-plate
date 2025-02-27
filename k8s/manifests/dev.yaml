@@ -100,3 +100,19 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
+---
+# Source: helm/templates/sealed-secret.yaml
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: plate-secret
+  namespace: setup_dev_workflow_with_helm
+spec:
+  encryptedData:
+    POSTGRES_DATABASE_URL: AgAWbfHCfeYD0/rzDxmxn/ki3OG+f0pTbEJa3/hZUoPwWiurHQH/rC4DDYBSpk6ExuITlGSxaKqdirSq72BN/+iFwa+L20I4xWi0YK0kDaKAvn342izGPXGcs8MzHZgYGqbcZ1NyqZdgj46VSAmqHRQrTXVuhuKnFosSNctiJizOcM1des74+k11RNsUPgd/fAKGkyKB8LrkfC3bRNpdjouyPfW8Cp/o3gLPoav3b2ouZu0eQFiYu5qxk8q4XSYL0kw3skBOlfppEUG1cbMO+XThPuME7jol5fLM3UXcrWkJYZxgBY+Q3XCQc6zK8VoePa/ElPukYNdjuUwfb9h7c8EhhPRhaVAOvSO8RSiqwo1YS8PxkVhYJzVG6U0Yey0TXD3SnCoPduEa7fF5nFuMGKhO/GAwlYYFoJLBJLinX0GF1DVpNU8qDhEZiDs6eaUEVbbHHU889qROkIb5zBW1ikrAzRCNqWN8H5goReS31mJ8JPz04NI6D4w26/XmSjzDo056bLiJnf9J4pRtKbmK3ZAMh6efkH5RQy2sYH1VA/E35NewvK61cycQzXPPOOLE0EA1Bb3wujVcs4mHDHkvkm0QhwVkM0hCfApq7jiQPz1iN0e50D+J6wRMpQQ9lJhHkwe+RMIbemOucv/ITyqtNLdAmbBIf7WO4pAIJgVw3BWzHjpcm4WYcHH2S7yR0mmaA4coq7LTrDKL4Jq3dwY1FbV0SupeNevdzY/Qe0ijDo2q6LGBx8GZMJLO1dS78PcUTJP/UCOWRPq/4/9b/YIH4U/MSEz6r9RiKY5Zb6+hIK9a0q3mSq9hdfyRCOBEQn/HYSUkd8NJIQrUpPqgtv/fI4LngHrIMPndxg==
+  template:
+    metadata:
+      creationTimestamp: null
+      name: plate-secret
+      namespace: setup_dev_workflow_with_helm
