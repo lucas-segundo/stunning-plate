@@ -23,7 +23,6 @@ jobs:
     environment: staging
     env:
       DOCKER_IMAGE: '${{ vars.REGISTRY_USERNAME }}/plate:${{ github.ref_name }}'
-      KUBECONFIG: ${{ secrets.KUBECONFIG }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -46,6 +45,9 @@ jobs:
         uses: azure/setup-kubectl@v4
         with:
           version: 'v1.30.7'
+
+      - name: Create kubeconfig
+        run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
       - name: Create namespace
         run: kubectl create namespace ${{ github.ref_name }}
