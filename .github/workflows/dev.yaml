@@ -23,7 +23,6 @@ jobs:
     environment: staging
     env:
       DOCKER_IMAGE: '${{ vars.REGISTRY_USERNAME }}/plate:${{ github.ref_name }}'
-      K8S_NAMESPACE: $(echo "${{ github.ref_name }}" | tr '_' '-')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -52,13 +51,17 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
+      - id: k8s_namespace
+        name: Format branch for K8S namespace
+        run: $(echo "${{ github.ref_name }}" | tr '_' '-')
+
       - id: has_namespace
         name: Check if has namespace
-        run: kubectl get namespace ${{ env.K8S_NAMESPACE }} | echo $?
+        run: kubectl get namespace ${{ steps.k8s_namespace.outputs.stdout }} | echo $?
 
       - if: ${{ steps.has_namespace.outputs.stdout == '1' }}
         name: Create K8S namespace if not exists
-        run: kubectl create namespace ${{ env.K8S_NAMESPACE }}
+        run: kubectl create namespace ${{ steps.k8s_namespace.outputs.stdout }}
 
       - name: Setup kubeseal
         env:
@@ -71,7 +74,7 @@ jobs:
       - name: Create sealed secret
         run: |
           kubectl create secret generic plate-secret \
-            --namespace=${{ env.K8S_NAMESPACE }} \
+            --namespace=${{ steps.k8s_namespace.outputs.stdout }} \
             --from-literal=POSTGRES_DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }} \
             --dry-run=client -o yaml | kubeseal -w ./k8s/helm/templates/sealed-secret.yaml
 
@@ -85,12 +88,12 @@ jobs:
           helm template plate ./k8s/helm \
           --values ./k8s/helm/dev-values.yaml \
           --set git.branch=${{ github.ref_name }} \
-          --set app.namespace=${{ env.K8S_NAMESPACE }} \
+          --set app.namespace=${{ steps.k8s_namespace.outputs.stdout }} \
           --set app.image=${{ env.DOCKER_IMAGE }} > ./k8s/manifests/dev.yaml
 
       - if: ${{ steps.has_namespace.outputs.stdout == '1' }}
         name: Apply K8S manifest if not exists
-        run: kubectl apply -f ./k8s/manifests/dev.yaml --namespace=${{ env.K8S_NAMESPACE }}
+        run: kubectl apply -f ./k8s/manifests/dev.yaml --namespace=${{ steps.k8s_namespace.outputs.stdout }}
 
       - name: Config git
         run: |
