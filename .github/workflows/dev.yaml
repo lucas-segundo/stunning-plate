@@ -55,13 +55,16 @@ jobs:
         name: Format branch for K8S namespace
         run: echo "${{ github.ref_name }}" | tr '_' '-'
 
+      - name: check outputs
+        run: echo ${{ steps.k8s_namespace.outputs }}
+
       - id: has_namespace
         name: Check if has namespace
-        run: kubectl get namespace ${{ steps.k8s_namespace.outputs.stdout }} | echo $?
+        run: kubectl get namespace ${{ steps.k8s_namespace.outputs }} | echo $?
 
       - if: ${{ steps.has_namespace.outputs.stdout == '1' }}
         name: Create K8S namespace if not exists
-        run: kubectl create namespace ${{ steps.k8s_namespace.outputs.stdout }}
+        run: kubectl create namespace ${{ steps.k8s_namespace.outputs }}
 
       - name: Setup kubeseal
         env:
@@ -88,12 +91,12 @@ jobs:
           helm template plate ./k8s/helm \
           --values ./k8s/helm/dev-values.yaml \
           --set git.branch=${{ github.ref_name }} \
-          --set app.namespace=${{ steps.k8s_namespace.outputs.stdout }} \
+          --set app.namespace=${{ steps.k8s_namespace.outputs }} \
           --set app.image=${{ env.DOCKER_IMAGE }} > ./k8s/manifests/dev.yaml
 
       - if: ${{ steps.has_namespace.outputs.stdout == '1' }}
         name: Apply K8S manifest if not exists
-        run: kubectl apply -f ./k8s/manifests/dev.yaml --namespace=${{ steps.k8s_namespace.outputs.stdout }}
+        run: kubectl apply -f ./k8s/manifests/dev.yaml --namespace=${{ steps.k8s_namespace.outputs }}
 
       - name: Config git
         run: |
