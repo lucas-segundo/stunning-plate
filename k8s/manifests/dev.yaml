@@ -3,14 +3,14 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: setup-dev-workflow-with-helm
+  name:
 ---
 # Source: helm/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: plate-service
-  namespace: setup-dev-workflow-with-helm
+  namespace: 
 spec:
   selector:
     app: plate
@@ -24,7 +24,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: plate-deployment
-  namespace: setup-dev-workflow-with-helm
+  namespace: 
 spec:
   selector:
     matchLabels:
@@ -53,7 +53,7 @@ apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: plate-hpa
-  namespace: setup-dev-workflow-with-helm
+  namespace: 
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -68,7 +68,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: plate-ingress
-  namespace: setup-dev-workflow-with-helm
+  namespace: 
   
 spec:
   
@@ -99,7 +99,7 @@ spec:
       include: dev.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: setup-dev-workflow-with-helm
+    namespace:
 ---
 # Source: helm/templates/sealed-secret.yaml
 apiVersion: bitnami.com/v1alpha1
@@ -107,12 +107,12 @@ kind: SealedSecret
 metadata:
   creationTimestamp: null
   name: plate-secret
-  namespace: setup-dev-workflow-with-helm
+  namespace: default
 spec:
   encryptedData:
-    POSTGRES_DATABASE_URL: AgAbIiBqr3zoa5Hlph6pZ4zZQ/6VPcEXNSUbi7fq+5JKUX0TTGqc6VrUPuqW+hm5hdZEZrAkJgyt191b6apdEQv4bbzlswQJITaoByC1kf7fOp3Qe2ImRsKN8lY6C7/I+OA5tNtjbIGviDMlc2g2jeNm6rCB7FKOZA7kjhdfIpvZls7ks+KMzLRgav2ja7xZlXSPgqXlq9W39z1XQPiqAtyXND7F9HM610jeobQnPbeAQ8wB8VDnDTKwp+HsDL9whi2wBlB4kJQrbSaH03tuLbGc9bFTqNCnMVZkgPE+jGjchO6QpfXE/n5HBRepR1iWqp7mmfkG+l0PUWAF3V30VLbWZ5lXZaFnPw29m6LmadTiTVtiEVNv6mP7/uZ+vfk01YvOShOmVvskZY4I/6DKgOrVQDQYN4TaaCt7O/WYm9WcpodDVa0UNkT/UIze9aDYJ1xVFeRmSLwwu+LDixOuaOsq/hk8B3kqx2XXFiFS6zTQTy9+XAdF+A1NMV42xpzZeAJda8uokXUozRtl8mraQPfT63fpLrpniVFV1efQEsJmwOEuZZb9+bJPJTddSze2qb1RTgADC9zEHIaSVSOJY+P0qjnQlpJryLqoVFeIWF5oU78FfnErwjfIKHo/lHZsBSVxJflJA35JpfBNHYYyzbUW2mGqPDEGR3C0hZ2ZMk+Gs/0OVU1983LsnWibiwedXRx1a5Nnirekq1CA9InC9k7F39+KXCbYxIORLq3IjKAhLq/QiBETeiRbnp8cqKlRUcn0XKOsz2oBB82HQM56kmpz8b0pOtrgD+Do4HqNE1P0tOnskJCOWlCmheFfO06vxWUvPu3ar+I6+EBg0mN/VGFdpA+50XDIUw==
+    POSTGRES_DATABASE_URL: AgC1RaepgWL0qeuPy8kh4XoF/6gAJFn4mcAiBKHPldNc7sZX2JDvTHO4Om5f2dz2KY7QjAzmCXVHP9vZL4zKUOC7/i3CeWIVVzclbMM4QfaRKcHOHa9/MrZQoEigK53XKu0IwyHC1cubHptibi61rLTSo0MQm0d8J7IcQSkzZA0aeVRelw9fypNDFYXRhGNYFvR+ZkEI/6ZC3POBl0SoOdH0aZDSwIhNXpw2QlSW7sZd6+Bd//8XUcGvX2CuL/uqpLurdN6SO/UvOBPcboiW2VoND9r2WW41fXL20vLIhoL6t5G8aK3XwRrQbt/uXrU5FjZweNg3iTxw8s1V9liUINLrRzaxIOFLiBut2V4F9vDzzI+IQvEdjlE/IetUTUn4PYc9coHclu3C3Du3IIhJU4HWgtz2zrLMaPD3KP+1qq6xNnrHlmb2ZRQocTkUIR3S2ZG0uzdU8oXCbUyexmWQ2JmwN+p0TxD/ges31XqZrjanergVQzr/OhtGVfCy+tlyRV3KwOuZmL7u2Si9/Unv8n6xH3wR1FdUY+9VraQgNaBRiigh4myn55E7HvrxcX4PWaY+pRUFrd+dwNTLOZbTKMGYwFpFRygE4V00X0AjeR8Y61cn2LSd/TC3FQyIHWgmpoIRp8rxW/b1Wp3sbaLmAWbZv+y9l4n3rXslnS50qXYWcdbFxDyBqYZTNRzd/JjXf6jLlIIb2fG9+idsLeg4mv3p0pmDfbUACZvOFQRfmvcQ+MrDbWMvzqfgMATJDjhwilhoxMooam/rMF57zlfpheWj6diX/sesDc7o5rLW/wvbVXl1lKEi86L9UK+hrpgQg9f0F+pDNNpEDTxWf/I9vDpYuTff5dJgMQ==
   template:
     metadata:
       creationTimestamp: null
       name: plate-secret
-      namespace: setup-dev-workflow-with-helm
+      namespace: default
