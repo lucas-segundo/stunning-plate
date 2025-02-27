@@ -2,7 +2,7 @@ name: Dev
 
 on:
   push:
-    branches-ignore: [main, staging]
+    branches-ignore: [main]
 
 jobs:
   ci:
