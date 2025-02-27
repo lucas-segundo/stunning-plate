@@ -52,8 +52,9 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
-      - name: Create namespace
-        run: kubectl create namespace ${{ env.K8S_NAMESPACE }}
+      - name: Create K8S namespace if not exists
+        run: |
+          kubectl get namespace ${{ env.K8S_NAMESPACE }} || kubectl create namespace ${{ env.K8S_NAMESPACE }}
 
       - name: Setup kubeseal
         env:
