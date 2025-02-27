@@ -23,6 +23,7 @@ jobs:
     environment: staging
     env:
       DOCKER_IMAGE: '${{ vars.REGISTRY_USERNAME }}/plate:${{ github.ref_name }}'
+      K8S_NAMESPACE: $(echo "${{ github.ref_name }}" | tr '_' '-')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -52,9 +53,7 @@ jobs:
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
       - name: Create namespace
-        env:
-          NAMESPACE: $(echo "${{ github.ref_name }}" | tr '_' '-')
-        run: kubectl create namespace ${{ env.NAMESPACE }}
+        run: kubectl create namespace ${{ env.K8S_NAMESPACE }}
 
       - name: Setup kubeseal
         env:
@@ -67,7 +66,7 @@ jobs:
       - name: Create sealed secret
         run: |
           kubectl create secret generic plate-secret \
-            --namespace=${{ github.ref_name }} \
+            --namespace=${{ env.K8S_NAMESPACE }} \
             --from-literal=POSTGRES_DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }} \
             --dry-run=client -o yaml | kubeseal -w ./k8s/helm/templates/sealed-secret.yaml
 
