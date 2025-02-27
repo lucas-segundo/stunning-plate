@@ -53,7 +53,7 @@ jobs:
 
       - id: k8s_namespace
         name: Format branch for K8S namespace
-        run: $(echo "${{ github.ref_name }}" | tr '_' '-')
+        run: echo "${{ github.ref_name }}" | tr '_' '-'
 
       - id: has_namespace
         name: Check if has namespace
