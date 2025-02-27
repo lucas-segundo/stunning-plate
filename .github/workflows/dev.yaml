@@ -6,7 +6,7 @@ on:
 
 jobs:
   ci:
-    environment: ${{ github.ref_name }}
+    environment: staging
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,6 +40,27 @@ jobs:
           target: prod
           push: true
           tags: ${{ env.DOCKER_IMAGE }}
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.30.7'
+
+      - name: Setup kubeseal
+        env:
+          KUBESEAL_VERSION: 0.23.0
+        run: |
+          curl -OL "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION:?}/kubeseal-${KUBESEAL_VERSION:?}-linux-amd64.tar.gz"
+          tar -xvzf kubeseal-${KUBESEAL_VERSION:?}-linux-amd64.tar.gz kubeseal
+          sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+
+      - name: Create sealed secret
+        run: |
+          kubectl create secret generic plate-secret \
+            --kubeconfig ${{ secrets.KUBECONFIG }} \
+            --namespace=${{ github.ref_name }} \
+            --from-literal=POSTGRES_DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }} \
+            --dry-run=client -o yaml | kubeseal -w ./k8s/helm/templates/sealed-secret.yaml
 
       - name: Setup helm
         uses: azure/setup-helm@v4.3.0
