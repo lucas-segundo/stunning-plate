@@ -1,0 +1,25 @@
+app:
+  namespace: ''
+  image: ''
+  port: 3000
+  manifestFile: staging.yaml
+  hpa:
+    minReplicas: 2
+    maxReplicas: 5
+    cpuPercentage: 80
+  limits:
+    cpu: 300m
+    memory: 256Mi
+
+host: ''
+
+git:
+  repoURL: https://github.com/lucas-segundo/stunning-plate
+  branch: ''
+
+configmap:
+  name: plate-config
+  data: {}
+
+secret:
+  name: plate-secret

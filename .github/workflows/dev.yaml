@@ -52,9 +52,13 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
-      - name: Create K8S namespace if not exists
-        run: |
-          kubectl get namespace ${{ env.K8S_NAMESPACE }} || kubectl create namespace ${{ env.K8S_NAMESPACE }}
+      - id: has_namespace
+        name: Check if has namespace
+        run: kubectl get namespace ${{ env.K8S_NAMESPACE }} | echo $?
+
+      - if: ${{ steps.has_namespace.outputs.stdout == '1' }}
+        name: Create K8S namespace if not exists
+        run: kubectl create namespace ${{ env.K8S_NAMESPACE }}
 
       - name: Setup kubeseal
         env:
@@ -83,6 +87,10 @@ jobs:
           --set git.branch=${{ github.ref_name }} \
           --set app.namespace=${{ env.K8S_NAMESPACE }} \
           --set app.image=${{ env.DOCKER_IMAGE }} > ./k8s/manifests/dev.yaml
+
+      - if: ${{ steps.has_namespace.outputs.stdout == '1' }}
+        name: Apply K8S manifest if not exists
+        run: kubectl apply -f ./k8s/manifests/dev.yaml --namespace=${{ env.K8S_NAMESPACE }}
 
       - name: Config git
         run: |
