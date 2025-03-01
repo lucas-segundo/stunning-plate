@@ -53,18 +53,15 @@ jobs:
 
       - id: k8s_namespace
         name: Format branch for K8S namespace
-        run: echo "${{ github.ref_name }}" | tr '_' '-'
-
-      - name: check outputs
-        run: echo ${{ steps.k8s_namespace.outputs }}
+        run: echo "namespace=${{ github.ref_name }}" | tr '_' '-' >> "$GITHUB_OUTPUT"
 
       - id: has_namespace
         name: Check if has namespace
-        run: kubectl get namespace ${{ steps.k8s_namespace.outputs }} | echo $?
+        run: kubectl get namespace ${{ steps.k8s_namespace.outputs.namespace }} | echo $?
 
       - if: ${{ steps.has_namespace.outputs.stdout == '1' }}
         name: Create K8S namespace if not exists
-        run: kubectl create namespace ${{ steps.k8s_namespace.outputs }}
+        run: kubectl create namespace ${{ steps.k8s_namespace.outputs.namespace }}
 
       - name: Setup kubeseal
         env:
@@ -77,7 +74,7 @@ jobs:
       - name: Create sealed secret
         run: |
           kubectl create secret generic plate-secret \
-            --namespace=${{ steps.k8s_namespace.outputs.stdout }} \
+            --namespace=${{ steps.k8s_namespace.outputs.namespace }} \
             --from-literal=POSTGRES_DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }} \
             --dry-run=client -o yaml | kubeseal -w ./k8s/helm/templates/sealed-secret.yaml
 
@@ -91,12 +88,12 @@ jobs:
           helm template plate ./k8s/helm \
           --values ./k8s/helm/dev-values.yaml \
           --set git.branch=${{ github.ref_name }} \
-          --set app.namespace=${{ steps.k8s_namespace.outputs }} \
+          --set app.namespace=${{ steps.k8s_namespace.outputs.namespace }} \
           --set app.image=${{ env.DOCKER_IMAGE }} > ./k8s/manifests/dev.yaml
 
       - if: ${{ steps.has_namespace.outputs.stdout == '1' }}
         name: Apply K8S manifest if not exists
-        run: kubectl apply -f ./k8s/manifests/dev.yaml --namespace=${{ steps.k8s_namespace.outputs }}
+        run: kubectl apply -f ./k8s/manifests/dev.yaml --namespace=${{ steps.k8s_namespace.outputs.namespace }}
 
       - name: Config git
         run: |
