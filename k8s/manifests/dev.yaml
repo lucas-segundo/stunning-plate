@@ -3,14 +3,14 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name:
+  name: Object
 ---
 # Source: helm/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: plate-service
-  namespace: 
+  namespace: Object
 spec:
   selector:
     app: plate
@@ -24,7 +24,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: plate-deployment
-  namespace: 
+  namespace: Object
 spec:
   selector:
     matchLabels:
@@ -53,7 +53,7 @@ apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: plate-hpa
-  namespace: 
+  namespace: Object
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -68,7 +68,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: plate-ingress
-  namespace: 
+  namespace: Object
   
 spec:
   
@@ -99,7 +99,7 @@ spec:
       include: dev.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace:
+    namespace: Object
 ---
 # Source: helm/templates/sealed-secret.yaml
 apiVersion: bitnami.com/v1alpha1
@@ -110,7 +110,7 @@ metadata:
   namespace: default
 spec:
   encryptedData:
-    POSTGRES_DATABASE_URL: AgC1RaepgWL0qeuPy8kh4XoF/6gAJFn4mcAiBKHPldNc7sZX2JDvTHO4Om5f2dz2KY7QjAzmCXVHP9vZL4zKUOC7/i3CeWIVVzclbMM4QfaRKcHOHa9/MrZQoEigK53XKu0IwyHC1cubHptibi61rLTSo0MQm0d8J7IcQSkzZA0aeVRelw9fypNDFYXRhGNYFvR+ZkEI/6ZC3POBl0SoOdH0aZDSwIhNXpw2QlSW7sZd6+Bd//8XUcGvX2CuL/uqpLurdN6SO/UvOBPcboiW2VoND9r2WW41fXL20vLIhoL6t5G8aK3XwRrQbt/uXrU5FjZweNg3iTxw8s1V9liUINLrRzaxIOFLiBut2V4F9vDzzI+IQvEdjlE/IetUTUn4PYc9coHclu3C3Du3IIhJU4HWgtz2zrLMaPD3KP+1qq6xNnrHlmb2ZRQocTkUIR3S2ZG0uzdU8oXCbUyexmWQ2JmwN+p0TxD/ges31XqZrjanergVQzr/OhtGVfCy+tlyRV3KwOuZmL7u2Si9/Unv8n6xH3wR1FdUY+9VraQgNaBRiigh4myn55E7HvrxcX4PWaY+pRUFrd+dwNTLOZbTKMGYwFpFRygE4V00X0AjeR8Y61cn2LSd/TC3FQyIHWgmpoIRp8rxW/b1Wp3sbaLmAWbZv+y9l4n3rXslnS50qXYWcdbFxDyBqYZTNRzd/JjXf6jLlIIb2fG9+idsLeg4mv3p0pmDfbUACZvOFQRfmvcQ+MrDbWMvzqfgMATJDjhwilhoxMooam/rMF57zlfpheWj6diX/sesDc7o5rLW/wvbVXl1lKEi86L9UK+hrpgQg9f0F+pDNNpEDTxWf/I9vDpYuTff5dJgMQ==
+    POSTGRES_DATABASE_URL: AgAiLlAOVNRDeqvTJBNgRGmiaaJX8sfyf8BROaTqBgmtryccukwn93tustQFC3aI53KmvcUDoHNzAOjOZp0KkwNbN9ZBWMkRqFQ64auY5Xt1KYeZzYd6GlLnLb0RCJQJ+BumkE22cR0T3+MtaQWNIgp8bnP3Ot2cwjMFHrbRZIbq7OHu8EBMmbq2QPvN2Py6mApY4ftoIsFfjtNItep2We0oXRqXc+Td7MnYTlg7j7i7DvGiaFpolww/GJhHVs0XK0Z2PqxCIUur8XjFHpgVTbqNQJIl64gK0fh2EN7bnJoiyz3aSNvsDZKFZsTLZX3xhOP4ADkEbR47JHAth1waXRovQHMgrERNbfevtTM3tuiMc3IpqIxNZ7nUzzVPo+5jOrCTwogjme1CNTF3KrlqapgcxbwHwBzmfBV+NL0W5AIpRogZPhUZ2WBA1n7hS6me51C1MhMTDtYsYcR7XIfz8BdC0e5/03ZNWsF0Kt9AoSsml6wo8khRYyBMH4y8sUrYsZSnjGebgDl+qUPHJ9+IWYKqRu3UyIX/mZmBc9p/eGxQUQDcbJlk3J8iFxw0MPo+okqkqNavLrL+dI9zRwHKgd5CybhLvv5UkZ9Vbo6tfc3C9Pe3K9tsJb+XsQIOKuivtgTR4i31dCExDi4NOJaYz/4jEQTccDI5vHuwkOfNHUEk6Ha2UrXcTVQ1V29nq3Pt+JqcR2D9PWgI1N9dFYUuPyx5zg4TVYRN+uh91mYfnZRmcNb1lExhj7pDxK3Djub0AOdL/7K9GdJk4UeW9yB0RyMUFy8hi8jZNw1G9gClrg+xVihjiXyBuT7Mlm+B3kq7rV/jAoMZslSbygdlk1w9JWXvOhIvKNef5w==
   template:
     metadata:
       creationTimestamp: null
