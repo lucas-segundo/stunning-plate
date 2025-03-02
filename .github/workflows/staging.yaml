@@ -1,9 +1,5 @@
 name: Dev
 
-on:
-  push:
-    branches: []
-
 jobs:
   ci:
     environment: staging
