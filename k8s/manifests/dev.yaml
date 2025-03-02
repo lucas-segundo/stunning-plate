@@ -3,14 +3,14 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: Object
+  name: setup-dev-workflow-with-helm
 ---
 # Source: helm/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: plate-service
-  namespace: Object
+  namespace: setup-dev-workflow-with-helm
 spec:
   selector:
     app: plate
@@ -24,7 +24,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: plate-deployment
-  namespace: Object
+  namespace: setup-dev-workflow-with-helm
 spec:
   selector:
     matchLabels:
@@ -53,7 +53,7 @@ apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: plate-hpa
-  namespace: Object
+  namespace: setup-dev-workflow-with-helm
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -68,7 +68,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: plate-ingress
-  namespace: Object
+  namespace: setup-dev-workflow-with-helm
   
 spec:
   
@@ -99,20 +99,4 @@ spec:
       include: dev.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: Object
----
-# Source: helm/templates/sealed-secret.yaml
-apiVersion: bitnami.com/v1alpha1
-kind: SealedSecret
-metadata:
-  creationTimestamp: null
-  name: plate-secret
-  namespace: default
-spec:
-  encryptedData:
-    POSTGRES_DATABASE_URL: AgAiLlAOVNRDeqvTJBNgRGmiaaJX8sfyf8BROaTqBgmtryccukwn93tustQFC3aI53KmvcUDoHNzAOjOZp0KkwNbN9ZBWMkRqFQ64auY5Xt1KYeZzYd6GlLnLb0RCJQJ+BumkE22cR0T3+MtaQWNIgp8bnP3Ot2cwjMFHrbRZIbq7OHu8EBMmbq2QPvN2Py6mApY4ftoIsFfjtNItep2We0oXRqXc+Td7MnYTlg7j7i7DvGiaFpolww/GJhHVs0XK0Z2PqxCIUur8XjFHpgVTbqNQJIl64gK0fh2EN7bnJoiyz3aSNvsDZKFZsTLZX3xhOP4ADkEbR47JHAth1waXRovQHMgrERNbfevtTM3tuiMc3IpqIxNZ7nUzzVPo+5jOrCTwogjme1CNTF3KrlqapgcxbwHwBzmfBV+NL0W5AIpRogZPhUZ2WBA1n7hS6me51C1MhMTDtYsYcR7XIfz8BdC0e5/03ZNWsF0Kt9AoSsml6wo8khRYyBMH4y8sUrYsZSnjGebgDl+qUPHJ9+IWYKqRu3UyIX/mZmBc9p/eGxQUQDcbJlk3J8iFxw0MPo+okqkqNavLrL+dI9zRwHKgd5CybhLvv5UkZ9Vbo6tfc3C9Pe3K9tsJb+XsQIOKuivtgTR4i31dCExDi4NOJaYz/4jEQTccDI5vHuwkOfNHUEk6Ha2UrXcTVQ1V29nq3Pt+JqcR2D9PWgI1N9dFYUuPyx5zg4TVYRN+uh91mYfnZRmcNb1lExhj7pDxK3Djub0AOdL/7K9GdJk4UeW9yB0RyMUFy8hi8jZNw1G9gClrg+xVihjiXyBuT7Mlm+B3kq7rV/jAoMZslSbygdlk1w9JWXvOhIvKNef5w==
-  template:
-    metadata:
-      creationTimestamp: null
-      name: plate-secret
-      namespace: default
+    namespace: setup-dev-workflow-with-helm
