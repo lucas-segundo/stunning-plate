@@ -3,30 +3,14 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: dev
----
-# Source: helm/templates/config.yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: plate-secret
-  namespace: dev
-data:
----
-# Source: helm/templates/config.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: plate-config
-  namespace: dev
-data:
+  name: setup-dev-workflow-with-helm
 ---
 # Source: helm/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: plate-service
-  namespace: dev
+  namespace: setup-dev-workflow-with-helm
 spec:
   selector:
     app: plate
@@ -40,7 +24,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: plate-deployment
-  namespace: dev
+  namespace: setup-dev-workflow-with-helm
 spec:
   selector:
     matchLabels:
@@ -52,7 +36,7 @@ spec:
     spec:
       containers:
         - name: plate
-          image: main
+          image: lucasfernandesapp/plate:setup_dev_workflow_with_helm
           resources:
             limits:
               cpu: 300m
@@ -60,8 +44,7 @@ spec:
           ports:
             - containerPort: 3000
           envFrom:
-            - configMapRef:
-                name: plate-config
+            
             - secretRef:
                 name: plate-secret
 ---
@@ -70,7 +53,7 @@ apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
   name: plate-hpa
-  namespace: dev
+  namespace: setup-dev-workflow-with-helm
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -85,7 +68,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: plate-ingress
-  namespace: dev
+  namespace: setup-dev-workflow-with-helm
   
 spec:
   
@@ -99,3 +82,21 @@ spec:
                 name: plate-service
                 port:
                   number: 80
+---
+# Source: helm/templates/argocd.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: plate-argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/lucas-segundo/stunning-plate
+    path: k8s/manifests/
+    targetRevision: setup_dev_workflow_with_helm
+    directory:
+      include: dev.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: setup-dev-workflow-with-helm

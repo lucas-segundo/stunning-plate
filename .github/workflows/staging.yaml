@@ -1,0 +1,107 @@
+name: Dev
+
+jobs:
+  ci:
+    environment: staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create docker image
+        run: docker build . -t ${{ github.ref_name }} --target dev
+
+      - name: Run unit tests
+        run: docker run ${{ github.ref_name }} npm run test
+
+  cd:
+    needs: ci
+    environment: staging
+    env:
+      DOCKER_IMAGE: '${{ vars.REGISTRY_USERNAME }}/plate:${{ github.ref_name }}'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build Prod Docker image and push to registry
+        uses: docker/build-push-action@v6.13.0
+        with:
+          target: prod
+          push: true
+          tags: ${{ env.DOCKER_IMAGE }}
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.30.7'
+
+      - name: Create kubeconfig
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+      - id: k8s_namespace
+        name: Format branch for K8S namespace
+        run: echo "namespace=${{ github.ref_name }}" | tr '_' '-' >> "$GITHUB_OUTPUT"
+
+      - name: Apply manifest if namespace doesn't exist
+        run: |
+          if ! kubectl get namespace ${{ steps.k8s_namespace.outputs.namespace }}; then
+            kubectl create namespace ${{ steps.k8s_namespace.outputs.namespace }}
+          fi
+
+      - name: Setup kubeseal
+        env:
+          KUBESEAL_VERSION: 0.23.0
+        run: |
+          curl -OL "https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION:?}/kubeseal-${KUBESEAL_VERSION:?}-linux-amd64.tar.gz"
+          tar -xvzf kubeseal-${KUBESEAL_VERSION:?}-linux-amd64.tar.gz kubeseal
+          sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+
+      - name: Create sealed secret
+        run: |
+          kubectl create secret generic plate-secret \
+            --namespace=${{ steps.k8s_namespace.outputs.namespace }} \
+            --from-literal=POSTGRES_DATABASE_URL=${{ secrets.POSTGRES_DATABASE_URL }} \
+            --dry-run=client -o yaml | kubeseal -w ./k8s/helm/templates/sealed-secret.yaml
+
+      - name: Setup helm
+        uses: azure/setup-helm@v4.3.0
+        with:
+          version: v3.16.2
+
+      - name: Build manifest
+        run: |
+          helm template plate ./k8s/helm \
+          --values ./k8s/helm/dev-values.yaml \
+          --set git.branch=${{ github.ref_name }} \
+          --set app.namespace=${{ steps.k8s_namespace.outputs.namespace }} \
+          --set app.image=${{ env.DOCKER_IMAGE }} > ./k8s/manifests/dev.yaml
+
+      - name: Apply K8S manifest if it doesn't have deployment
+        run: |
+          if ! kubectl get deployment plate --namespace=${{ steps.k8s_namespace.outputs.namespace }}; then
+            kubectl apply -f ./k8s/manifests/dev.yaml --namespace=${{ steps.k8s_namespace.outputs.namespace }}
+          fi
+
+      - name: Config git
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Commit
+        run: git commit -am "Builds K8S manifest"
+
+      - name: Push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          branch: ${{ github.ref_name }}

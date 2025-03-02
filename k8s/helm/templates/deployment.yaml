@@ -22,7 +22,9 @@ spec:
           ports:
             - containerPort: {{ .Values.app.port }}
           envFrom:
+            {{ if .Values.configmap.data }}
             - configMapRef:
                 name: {{ .Values.configmap.name }}
+            {{ end }}
             - secretRef:
                 name: {{ .Values.secret.name }}

@@ -1,8 +1,8 @@
 app:
-  namespace: dev
+  namespace: ''
   image: ''
   port: 3000
-  manifestFile: dev.yaml
+  manifestFile: staging.yaml
   hpa:
     minReplicas: 2
     maxReplicas: 5
