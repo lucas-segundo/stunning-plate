@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches-ignore: [main, staging]
+    branches: '*'
 
 jobs:
   ci:
