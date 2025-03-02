@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [main]
+    branches-ignore: [main, staging]
 
 jobs:
   ci:
@@ -22,7 +22,7 @@ jobs:
     needs: ci
     environment: ${{ github.ref_name }}
     env:
-      DOCKER_IMAGE: '${{ vars.REGISTRY_USERNAME }}/plate:${{ github.ref_name }}-${{ github.sha }}'
+      DOCKER_IMAGE: '${{ vars.REGISTRY_USERNAME }}/plate:${{ github.ref_name }}'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -41,13 +41,17 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_IMAGE }}
 
-      - name: Setup kustomize
-        run: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+      - id: k8s_namespace
+        name: Format branch for K8S namespace
+        run: echo "namespace=${{ github.ref_name }}" | tr '_' '-' >> "$GITHUB_OUTPUT"
 
-      - name: Set image
+      - name: Build manifest
         run: |
-          cd k8s/overlays/dev
-          kustomize edit set image appImage=${{ env.DOCKER_IMAGE }}
+          helm template plate ./k8s/helm \
+          --values ./k8s/helm/dev-values.yaml \
+          --set git.branch=${{ github.ref_name }} \
+          --set app.namespace=${{ steps.k8s_namespace.outputs.namespace }} \
+          --set app.image=${{ env.DOCKER_IMAGE }} > ./k8s/manifests/dev.yaml
 
       - name: Config git
         run: |
@@ -55,7 +59,7 @@ jobs:
           git config --global user.name "GitHub Actions"
 
       - name: Commit
-        run: git commit -am "Bump docker version"
+        run: git commit -am "Builds K8S manifest"
 
       - name: Push
         uses: ad-m/github-push-action@master
