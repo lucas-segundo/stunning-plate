@@ -81,7 +81,7 @@ spec:
               service:
                 name: plate-service
                 port:
-                  number: 80
+                  number: 3000
 ---
 # Source: helm/templates/argocd.yaml
 apiVersion: argoproj.io/v1alpha1
